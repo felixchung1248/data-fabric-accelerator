@@ -14,13 +14,8 @@ spec:
         args:
         - -c
         - |
-          # az login --service-principal -u fa41385d-210e-4d77-8bc9-b3d143779534 -p rZ~8Q~LTU4fEu2iuGUASt~loyXC47d1u4kyyFaod --tenant 17309dcc-5df5-4988-8a34-dfe915b1b574
-          # az aks get-credentials --resource-group RG_K8S --name K8Sdremio --overwrite-existing
           echo "start"
-          # kubectl wait --for=jsonpath='{.status.phase}'=Running pod/dremio-executor-0 -n dremiosandbox --timeout=2m
-          # kubectl wait --for=jsonpath='{.status.phase}'=Running pod/dremio-master-0 -n dremiosandbox --timeout=2m
-          # kubectl wait --for=jsonpath='{.status.phase}'=Running pod/zk-0 -n dremiosandbox --timeout=2m
-          # echo "running"
+
 
           # Number of times to check the website
           iterations=20
