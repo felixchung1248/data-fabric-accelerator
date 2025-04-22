@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "data-catalog-manage.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "data-catalog-manage.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "data-catalog-manage.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: python-script-volume
+              mountPath: /usr/src/app
+          command: ["python3"]
+          args: ["/usr/src/app/data-catalog-manage.py"]
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: DATA_CATALOG_URL
+              value: {{ .Values.dataCatalogUrl }}
+            - name: DATA_CATALOG_USERNAME
+              value: {{ .Values.dataCatalogUsr }}
+            - name: DATA_CATALOG_PASSWORD
+              value: {{ .Values.dataCatalogPw }}
+      volumes:
+        - name: python-script-volume
+          configMap:
+            name: {{ include "data-catalog-manage.fullname" . }}
+            items:
+              - key: data-catalog-manage.py
+                path: data-catalog-manage.py

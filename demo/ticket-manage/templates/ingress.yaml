@@ -1,0 +1,46 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: http-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: '/listticket'
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "ticket-manage.fullname" . }}
+            port:
+              number: {{ .Values.service.port }}
+      - path: '/approveticket'
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "ticket-manage.fullname" . }}
+            port:
+              number: {{ .Values.service.port }}
+      - path: '/approve-access'
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "ticket-manage.fullname" . }}
+            port:
+              number: {{ .Values.service.port }}
+      - path: '/showdatacatalog'
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "ticket-manage.fullname" . }}
+            port:
+              number: {{ .Values.service.port }}
+      - path: '/reject-ticket'
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "ticket-manage.fullname" . }}
+            port:
+              number: {{ .Values.service.port }}

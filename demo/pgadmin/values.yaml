@@ -1,0 +1,10 @@
+# values.yaml
+pgadmin4:
+  service:
+    type: NodePort
+    ## Specify a nodePort if you need a specific port number
+    nodePort: 30080
+  env:
+    email: "admin@example.com"
+    password: "SuperSecret"
+  # Any other overrides you might need

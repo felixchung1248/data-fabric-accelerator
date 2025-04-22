@@ -1,0 +1,21 @@
+replicaCount: 1
+
+image:
+  repository: jtruongey/python-golden-image
+  pullPolicy: Always
+  tag: "latest"
+  pullSecrets: 
+   - name: docker-registry-secret
+
+service:
+  type: ClusterIP
+  port: 7011
+  targetPort: 7011
+
+ingress:
+  enabled: true
+  # annotations, hosts, and other configurations go here
+
+dataCatalogUrl: http://datahub-datahub-gms.datahub-ns:8080
+dataCatalogUsr: datahub
+dataCatalogPw: datahub

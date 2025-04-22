@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "dataset-query-listing.fullname" . }}
+data:
+  dataset-query-listing.py: |-
+{{ .Files.Get "files/dataset-query-listing.py" | indent 4 }}

@@ -1,0 +1,20 @@
+replicaCount: 1
+
+image:
+  repository: jtruongey/python-golden-image
+  pullPolicy: Always
+  tag: "latest"
+  pullSecrets: 
+   - name: docker-registry-secret
+
+service:
+  type: ClusterIP
+  port: 5005
+  targetPort: 5005
+
+ingress:
+  enabled: true
+  # annotations, hosts, and other configurations go here
+
+sandboxUrl: http://denodo-denodo-platform-service.denodo-sandbox-ns:9090/denodo-restfulws
+prodUrl: http://denodo-denodo-platform-service.denodo-ns:9090/denodo-restfulws

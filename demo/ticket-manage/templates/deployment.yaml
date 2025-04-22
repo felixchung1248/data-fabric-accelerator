@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ticket-manage.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "ticket-manage.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "ticket-manage.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: python-script-volume
+              mountPath: /usr/src/app
+          command: ["python3"]
+          args: ["/usr/src/app/ticket-manage.py"]
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: ZAMMAD_URL
+              value: {{ .Values.zammadUrl }}
+            - name: ZAMMAD_USR
+              value: {{ .Values.zammadUsr }}
+            - name: ZAMMAD_PW
+              value: {{ .Values.zammadPw }}
+            - name: JENKINS_WRAPPER_URL
+              value: {{ .Values.jenkinsWrapperUrl }}
+      volumes:
+        - name: python-script-volume
+          configMap:
+            name: {{ include "ticket-manage.fullname" . }}
+            items:
+              - key: ticket-manage.py
+                path: ticket-manage.py

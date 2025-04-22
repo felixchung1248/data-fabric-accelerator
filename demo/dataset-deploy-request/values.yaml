@@ -1,0 +1,18 @@
+replicaCount: 1
+
+image:
+  repository: jtruongey/python-golden-image
+  pullPolicy: Always
+  tag: "latest"
+  pullSecrets: 
+   - name: docker-registry-secret
+
+service:
+  type: ClusterIP
+  port: 5001
+  targetPort: 5001
+
+env:
+  TICKET_SYS_URL: http://zammad.zammad-ns.svc.cluster.local:8080/api/v1/tickets
+  TICKET_SYS_USER: admin@example.org
+  TICKET_SYS_PW: ZAQ!2wsxcde3

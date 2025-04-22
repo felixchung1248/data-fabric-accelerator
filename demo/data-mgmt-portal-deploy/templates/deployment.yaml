@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "data-mgmt-web.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "data-mgmt-web.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "data-mgmt-web.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args: 
+            - |
+                sed -i 's/HOST_IP/{{ .Values.hostIp }}/g' /app/src/config.js
+                npm install --force
+                npm start
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          workingDir: /app
+          
+      imagePullSecrets:
+      {{- if .Values.image.pullSecrets }}
+        {{- toYaml .Values.image.pullSecrets | nindent 6 }}
+      {{- end }}

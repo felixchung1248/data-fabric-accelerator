@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dataset-query-listing.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "dataset-query-listing.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "dataset-query-listing.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: python-script-volume
+              mountPath: /usr/src/app
+          command: ["python3"]
+          args: ["/usr/src/app/dataset-query-listing.py"]
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: SANDBOX_URL
+              value: {{ .Values.sandboxUrl }}
+            - name: PROD_URL
+              value: {{ .Values.prodUrl }}
+            - name: SANDBOX_USERNAME
+              value: admin
+            - name: SANDBOX_PASSWORD
+              value: admin
+            - name: PROD_USERNAME
+              value: admin
+            - name: PROD_PASSWORD
+              value: admin
+      volumes:
+        - name: python-script-volume
+          configMap:
+            name: {{ include "dataset-query-listing.fullname" . }}
+            items:
+              - key: dataset-query-listing.py
+                path: dataset-query-listing.py

@@ -1,0 +1,20 @@
+replicaCount: 1
+
+image:
+  repository: jtruongey/python-golden-image
+  pullPolicy: IfNotPresent
+  tag: "latest"
+  pullSecrets: 
+   - name: docker-registry-secret
+
+service:
+  type: ClusterIP
+  port: 5000
+  targetPort: 5000
+
+ingress:
+  enabled: true
+  pathPrefix: /run-jenkins
+  # annotations, hosts, and other configurations go here
+
+url: http://jenkins.jenkins-ns:8080

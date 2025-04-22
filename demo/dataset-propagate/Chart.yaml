@@ -1,0 +1,4 @@
+apiVersion: v2
+name: dataset-propagate
+description: A Helm chart for a service to propagate dataset from virtualization
+version: 0.1.0

@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-mc-setup
+spec:
+  template:
+    spec:
+      containers:
+        - name: mc-setup
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # Wait for MinIO server to be ready
+              until mc alias set myminio http://minio:9000 minioadmin minioadmin; do
+                echo "Waiting for MinIO to be ready..."
+                sleep 5
+              done
+
+              # Create a bucket and set public policy
+              mc mb myminio/dremiostorage
+              mc policy set public myminio/dremiostorage
+              
+              mc mb myminio/dremiostoragesandbox
+              mc policy set public myminio/dremiostoragesandbox
+              
+              mc mb myminio/userdropzone/marketing
+              mc mb myminio/userdropzone/finance
+              mc policy set public myminio/userdropzone
+              
+              mc mb myminio/nessiedemo01
+              mc policy set public myminio/nessiedemo01
+              
+              # Create access key
+              mc admin user svcacct add --access-key "minioadminkey" --secret-key "minioadminpw" myminio minioadmin
+              mc admin policy attach myminio consoleAdmin --user "minioadminkey"
+      restartPolicy: OnFailure

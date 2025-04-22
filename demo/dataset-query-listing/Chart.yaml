@@ -1,0 +1,4 @@
+apiVersion: v2
+name: dataset-query-listing
+description: A Helm chart for a service to get Dremio datasets metadata in production sandbox
+version: 0.1.0

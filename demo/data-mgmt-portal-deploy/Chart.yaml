@@ -1,0 +1,4 @@
+apiVersion: v2
+name: my-reactapp-chart
+description: A Helm chart for a web UI as a centralized data management portal
+version: 0.1.0

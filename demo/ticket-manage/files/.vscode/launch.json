@@ -1,0 +1,22 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+            ,"env": {"ZAMMAD_URL":"http://104.215.255.15:30880/"
+                ,"ZAMMAD_USR":"admin@example.org"
+                ,"ZAMMAD_PW":"ZAQ!2wsxcde3"
+                ,"JENKINS_WRAPPER_URL":"http://jenkins-wrapper.jenkins-wrapper-ns:5000"
+
+            }
+        }
+    ]
+}

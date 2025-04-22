@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "dataset-propagate.fullname" . }}
+data:
+  dataset-propagate.py: |-
+{{ .Files.Get "files/dataset-propagate.py" | indent 4 }}

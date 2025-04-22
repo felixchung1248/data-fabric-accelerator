@@ -1,0 +1,25 @@
+replicaCount: 1
+
+image:
+  repository: jtruongey/python-golden-image
+  pullPolicy: Always
+  tag: "latest"
+  pullSecrets: 
+   - name: docker-registry-secret
+
+service:
+  type: ClusterIP
+  port: 5201
+  targetPort: 5201
+
+ingress:
+  enabled: true
+  pathPrefix: /genai-response
+  proxyConnectTimeout: 300
+  proxySendTimeout: 300
+  proxyReadTimeout: 300
+  
+denodoUrl: denodo://admin:admin@denodo-denodo-platform-service.denodo-ns:9996/admin
+genAiModel: gpt-4-turbo
+redisUrl: redis://redis-master.langchain-chatbot-denodo-ns:6379/0
+  

@@ -1,0 +1,4 @@
+apiVersion: v2
+name: data-catalog-manage
+description: A Helm chart for a service to manage data catalog datasets
+version: 0.1.0

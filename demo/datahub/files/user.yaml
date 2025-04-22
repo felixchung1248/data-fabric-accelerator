@@ -1,0 +1,15 @@
+- id: felix@example.org
+  first_name: Felix
+  last_name: Chung
+  email: felix@example.org
+  description: "Data steward"
+- id: joris@example.org
+  first_name: Joris
+  last_name: Truong
+  email: joris@example.org
+  description: "Data steward"
+- id: john@example.org
+  first_name: John
+  last_name: Wong
+  email: john@example.org
+  description: "Data steward"

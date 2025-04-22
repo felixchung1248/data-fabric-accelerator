@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "minio-non-tls.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "minio-non-tls.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "minio-non-tls.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: storage
+              mountPath: /data
+          command: ["/bin/bash"]
+          args: ["-c","minio server /data --console-address :{{ .Values.service.consolePort }}"]
+          ports:
+            - containerPort: {{ .Values.service.consolePort }}
+            - containerPort: {{ .Values.service.s3Port }}
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: {{ include "minio-non-tls.fullname" . }}-pvc

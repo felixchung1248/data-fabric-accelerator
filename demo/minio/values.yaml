@@ -1,0 +1,15 @@
+replicaCount: 1
+image:
+    repository: quay.io/minio/minio
+    tag: latest
+    pullPolicy: Always
+service:
+    type: NodePort
+    consolePort: 9090
+    consoleTargetPort: 9090
+    consoleNodePort: 31090
+    s3Port: 9000
+    s3TargetPort: 9000
+    s3NodePort: 31900
+storage: 
+    size: 10G

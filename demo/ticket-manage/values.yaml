@@ -1,0 +1,20 @@
+replicaCount: 1
+
+image:
+  repository: dataopennesscommunity/demo-golden
+  pullPolicy: Always
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 6080
+  targetPort: 6080
+
+ingress:
+  enabled: true
+  # annotations, hosts, and other configurations go here
+
+zammadUrl: http://zammad.zammad-ns:8080
+zammadUsr: admin@example.org
+zammadPw: ZAQ!2wsxcde3
+jenkinsWrapperUrl: http://jenkins-wrapper.jenkins-wrapper-ns:5000

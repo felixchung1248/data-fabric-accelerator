@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "zammad.fullname" . }}-python
+  labels:
+    {{- include "zammad.labels" . | nindent 4 }}
+data:
+  create_object.py: |-
+{{ .Files.Get "files/create_object.py" | indent 4 }}

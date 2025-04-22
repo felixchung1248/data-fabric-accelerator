@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: datahub-configmap
+data:
+  user.yaml: |-
+    {{- .Files.Get "files/user.yaml" | nindent 4 }}

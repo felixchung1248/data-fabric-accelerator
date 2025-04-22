@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-create-tags
+spec:
+  template:
+    spec:
+      containers:
+      - name: python-job
+        image: dataopennesscommunity/demo-golden
+        imagePullPolicy: Always
+        env:
+            - name: DATAHUB_URL
+              value: {{ .Values.datahubHost }}
+        volumeMounts:
+        - name: script-volume
+          mountPath: /app
+        command: ["python3", "/app/create_object.py"]
+      volumes:
+      - name: script-volume
+        configMap:
+          name: {{ .Release.Name }}-python
+      restartPolicy: Never
+  backoffLimit: 4

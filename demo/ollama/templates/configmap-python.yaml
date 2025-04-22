@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "ollama.fullname" . }}-python
+data:
+  pull_model.py: |-
+{{ .Files.Get "files/pull_model.py" | indent 4 }}

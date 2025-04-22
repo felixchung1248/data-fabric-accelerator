@@ -1,0 +1,16 @@
+replicaCount: 1
+
+image:
+  repository: felixchung974/data-management-portal
+  pullPolicy: Always
+  tag: "latest"
+  pullSecrets: 
+   - name: docker-registry-secret
+
+service:
+  type: NodePort
+  port: 3000
+  targetPort: 3000
+  nodePort: 30030
+  
+hostIp: HOST_IP

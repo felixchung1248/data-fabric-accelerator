@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "zammad.fullname" . }}-create-objects
+spec:
+  template:
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: python-job
+        image: dataopennesscommunity/demo-golden
+        imagePullPolicy: Always
+        env:
+            - name: ZAMMAD_HOST
+              value: {{ .Values.zammadHost }}
+            - name: USERNAME
+              value: {{ .Values.zammadUsr }}
+            - name: PASSWORD
+              value: {{ .Values.zammadPw }}
+            - name: TOKEN
+              value: {{ .Values.zammadToken }}
+        volumeMounts:
+        - name: script-volume
+          mountPath: /app
+        command: ["python3", "/app/create_object.py"]
+      volumes:
+      - name: script-volume
+        configMap:
+          name: {{ template "zammad.fullname" . }}-python
+      restartPolicy: Never
+  backoffLimit: 4

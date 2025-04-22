@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jenkins-wrapper.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "jenkins-wrapper.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "jenkins-wrapper.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: python-script-volume
+              mountPath: /usr/src/app
+          command: ["python3"]
+          args: ["/usr/src/app/jenkins-wrapper.py"]
+          ports:
+            - containerPort: 5000
+          env:
+            - name: JENKINS_URL
+              value: {{ .Values.url }}
+      volumes:
+        - name: python-script-volume
+          configMap:
+            name: {{ include "jenkins-wrapper.fullname" . }}
+            items:
+              - key: jenkins-wrapper.py
+                path: jenkins-wrapper.py

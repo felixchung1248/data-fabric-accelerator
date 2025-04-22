@@ -1,0 +1,16 @@
+replicaCount: 1
+
+image:
+  repository: ollama/ollama
+  pullPolicy: Always
+  tag: "latest"
+
+service:
+  type: NodePort
+  port: 11434
+  targetPort: 11434
+  nodePort: 31434
+  
+ollamaHost: http://ollama.ollama-ns:11434
+ollamaModel: llama3.2
+

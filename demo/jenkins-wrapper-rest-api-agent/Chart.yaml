@@ -1,0 +1,4 @@
+apiVersion: v2
+name: jenkins-wrapper
+description: A Helm chart for jenkins wrapper to call Jenkins api
+version: 0.1.0
