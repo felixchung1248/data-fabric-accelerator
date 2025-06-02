@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mcp-agentic-dremio.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "mcp-agentic-dremio.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "mcp-agentic-dremio.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: python-script-volume
+              mountPath: /usr/src/app
+          command: ["python3"]
+          args: ["/usr/src/app/mcp-agentic-dremio.py"]
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: GENAI_MODEL
+              value: {{ .Values.genAiModel }}
+            - name: OPENROUTER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: api-key  # Name of the Secret
+                  key: api-key         
+      volumes:
+        - name: python-script-volume
+          configMap:
+            name: mcp-agentic-dremio
+            items:
+              - key: pydantic-mcp-dremio.py
+                path: pydantic-mcp-dremio.py

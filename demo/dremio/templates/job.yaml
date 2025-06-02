@@ -27,16 +27,16 @@ spec:
           for i in $(seq 1 $iterations)
           do
               # Perform the curl request and store the response
-              response=$(curl -s -w '%{http_code}\n' '{{$.Values.prodUrl}}:{{$.Values.coordinator.web.port}}/apiv2/login')
+              response=$(curl -s -w '%{http_code}\n' '{{$.Values.dremioUrl}}:{{$.Values.coordinator.web.port}}/apiv2/login')
 
               # Check the response code
               if [ "$response" -eq 401 ]; then
                   echo "Website is accessible "
-                  response1=$(curl -X POST -H 'Content-Type: application/json' -d '{"userName":"{{$.Values.userName}}","password":"{{$.Values.password}}"}' '{{$.Values.prodUrl}}:{{$.Values.coordinator.web.port}}/apiv2/login')
+                  response1=$(curl -X POST -H 'Content-Type: application/json' -d '{"userName":"{{$.Values.userName}}","password":"{{$.Values.password}}"}' '{{$.Values.dremioUrl}}:{{$.Values.coordinator.web.port}}/apiv2/login')
                   echo $response1
                   token=$(echo "$response1" | grep -oP '(?<="token":")[^"]+')
                   echo $token
-                  url2='{{$.Values.prodUrl}}:{{$.Values.coordinator.web.port}}/api/v3/catalog'
+                  url2='{{$.Values.dremioUrl}}:{{$.Values.coordinator.web.port}}/api/v3/catalog'
                   echo $url2
                   payload='{
                     "entityType": "{{ $.Values.ObjectStorage.S3.entityType }}",
@@ -74,9 +74,46 @@ spec:
                     "accelerationActivePolicyType": "{{  $.Values.ObjectStorage.S3.accelerationActivePolicyType }}"         
                   }'
                   echo $payload
-                  response2=$(curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d "$payload" "{{$.Values.prodUrl}}:{{$.Values.coordinator.web.port}}/api/v3/catalog")
+                  response2=$(curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d "$payload" "{{$.Values.dremioUrl}}:{{$.Values.coordinator.web.port}}/api/v3/catalog")
                   echo $response2
+                  
+                  payload='{
+                    "entityType": "{{ $.Values.Database.POSTGRES.entityType }}",
+                    "config": {
+                      "authenticationType": "{{ $.Values.Database.POSTGRES.config.authenticationType }}",
+                      "username": "{{ $.Values.Database.POSTGRES.config.username }}",
+                      "password": "{{ $.Values.Database.POSTGRES.config.password }}",
+                      "hostname": "{{ $.Values.Database.POSTGRES.config.hostname }}",
+                      "port": "{{ $.Values.Database.POSTGRES.config.port }}",
+                      "databaseName": "{{ $.Values.Database.POSTGRES.config.databaseName }}",
+                      "useSsl": "{{ $.Values.Database.POSTGRES.config.useSsl }}",
+                      "fetchSize": "{{ $.Values.Database.POSTGRES.config.fetchSize }}",
+                      "maxIdleConns": "{{ $.Values.Database.POSTGRES.config.maxIdleConns }}",
+                      "idleTimeSec": "{{ $.Values.Database.POSTGRES.config.idleTimeSec }}",
+                      "encryptionValidationMode": "{{ $.Values.Database.POSTGRES.config.encryptionValidationMode }}",
+                      "propertyList": [
+                        {
+                          "name": "connect_timeout",
+                          "value": "10&application_name=myapp"
+                        }
+                      ]
+                    },
+                    "type": "POSTGRES",
+                    "name": "{{ $.Values.Database.POSTGRES.name }}",
+                    "metadataPolicy":{
+                      "authTTLMs":"{{  $.Values.Database.POSTGRES.metadataPolicy.authTTLMs }}",
+                      "namesRefreshMs":"{{  $.Values.Database.POSTGRES.metadataPolicy.namesRefreshMs }}",
+                      "datasetRefreshAfterMs":"{{  $.Values.Database.POSTGRES.metadataPolicy.datasetRefreshAfterMs }}",
+                      "datasetUpdateMode":"{{  $.Values.Database.POSTGRES.metadataPolicy.datasetUpdateMode }}",
+                      "deleteUnavailableDatasets":"{{  $.Values.Database.POSTGRES.metadataPolicy.deleteUnavailableDatasets }}",
+                      "autoPromoteDatasets":"{{  $.Values.Database.POSTGRES.metadataPolicy.autoPromoteDatasets }}"
+                    },
+                    "accelerationActivePolicyType": "{{  $.Values.Database.POSTGRES.accelerationActivePolicyType }}"         
+                  }'
 
+                  echo $payload
+                  response3=$(curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d "$payload" "{{$.Values.dremioUrl}}:{{$.Values.coordinator.web.port}}/api/v3/catalog")
+                  echo $response3
                   break 
               else
                   echo "Website is not accessible (HTTP $response)"

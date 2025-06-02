@@ -580,8 +580,7 @@ service:
 # imagePullSecrets:
 #  - secretname
 
-prodUrl: http://dremio-client.dremio-ns.svc.cluster.local
-sandboxUrl: http://dremio-sandbox.dremio-sandbox-ns.svc.cluster.local
+dremioUrl: http://dremio.dremio-ns.svc.cluster.local
 userName: dremio
 password: dremio123
 
@@ -606,3 +605,30 @@ ObjectStorage:
       namesRefreshMs: "3600000"
     name: "userdropzone"
   type: "S3"
+  
+Database:
+  POSTGRES:
+    accelerationActivePolicyType: "NEVER"
+    config:
+      authenticationType: "MASTER"
+      username: "felixchung"
+      password: "Passw0rd"
+      hostname: "postgresql.postgresql-ns.svc.cluster.local"
+      port: "5432"
+      databaseName: "demodb01"
+      useSsl: "false"
+      fetchSize: 200
+      maxIdleConns: 8
+      idleTimeSec: 60
+      encryptionValidationMode: "CERTIFICATE_AND_HOSTNAME_VALIDATION"
+    entityType: "source"
+    metadataPolicy:
+      authTTLMs: "86400000"
+      autoPromoteDatasets: "false"
+      datasetExpireAfterMs: "10800000"
+      datasetRefreshAfterMs: "3600000"
+      datasetUpdateMode: "PREFETCH_QUERIED"
+      deleteUnavailableDatasets: "true"
+      namesRefreshMs: "3600000"
+    name: "postgres-demo-01"
+  type: "POSTGRES"

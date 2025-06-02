@@ -1,11 +1,9 @@
 replicaCount: 1
 
 image:
-  repository: felixchung974/data-management-portal
+  repository: dataopennesscommunity/demo-react
   pullPolicy: Always
   tag: "latest"
-  pullSecrets: 
-   - name: docker-registry-secret
 
 service:
   type: NodePort

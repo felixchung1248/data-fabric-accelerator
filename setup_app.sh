@@ -1,17 +1,14 @@
 #!/bin/bash
 CONFIG_FILE="namespace.conf"
 DATAHUB_NAMESPACE=datahub-ns
+MCP_AGENTIC_DREMIO_NAMESPACE=mcp-agentic-dremio-ns
 TIMEOUT=15m0s
 
 echo current user: $USER
 echo home path: $HOME
 
 SCRIPT_DIR=$(dirname "$0")
-
-# Change to that directory
 cd "$SCRIPT_DIR"
-
-source setting.conf
 
 # First loop: Create all namespaces
 declare -A namespace_created
@@ -24,20 +21,8 @@ while IFS=',' read -r namespace path chart; do
 done < "$CONFIG_FILE"
 
 # Create required secrets
-kubectl get secret mysql-secrets -n $DATAHUB_NAMESPACE &> /dev/null || kubectl create secret generic mysql-secrets --from-literal=mysql-root-password='datahub' -n $DATAHUB_NAMESPACE
-[ ! -z $OPENAI_KEY ] && kubectl create secret generic openai-secret --from-literal=openai-key=${OPENAI_KEY} --namespace=langchain-chatbot-denodo-ns
-
-## Denodo Sandbox
-[ ! -z $HARBOR_USR ] && [ ! -z $HARBOR_PW ] && kubectl create secret docker-registry harbor-registry-secret --docker-server=harbor.open.denodo.com --docker-username=${HARBOR_USR} --docker-password=${HARBOR_PW} -n denodo-sandbox-ns
-[ ! -z $LICENSE_PATH ] && kubectl create secret generic denodo-platform-license --from-file=denodo.lic=${LICENSE_PATH} --namespace denodo-sandbox-ns
-
-## Denodo Production
-[ ! -z $HARBOR_USR ] && [ ! -z $HARBOR_PW ] && kubectl create secret docker-registry harbor-registry-secret --docker-server=harbor.open.denodo.com --docker-username=${HARBOR_USR} --docker-password=${HARBOR_PW} -n denodo-ns
-[ ! -z $LICENSE_PATH ] && kubectl create secret generic denodo-platform-license --from-file=denodo.lic=${LICENSE_PATH} --namespace denodo-ns
-
-[ ! -z $HARBOR_USR ] && [ ! -z $HARBOR_PW ] && sed -e "s/DENODO_USR_VAL/${HARBOR_USR}/" -e "s/DENODO_PW_VAL/${HARBOR_PW}/" ./demo/jenkins/values.template.yaml > ./demo/jenkins/values.yaml
-
-[ ! -z $DOCKERHUB_USR ] && [ ! -z $DOCKERHUB_PW ] && kubectl create secret docker-registry docker-registry-secret --docker-server=docker.io --docker-username=${DOCKERHUB_USR} --docker-password=${DOCKERHUB_PW} -n data-mgmt-web-ns
+kubectl get namespace $DATAHUB_NAMESPACE &> /dev/null && kubectl get secret mysql-secrets -n $DATAHUB_NAMESPACE &> /dev/null || kubectl create secret generic mysql-secrets --from-literal=mysql-root-password='datahub' -n $DATAHUB_NAMESPACE
+[ ! -z $API_KEY ] && kubectl get namespace $MCP_AGENTIC_DREMIO_NAMESPACE &> /dev/null && kubectl get secret api-key -n $MCP_AGENTIC_DREMIO_NAMESPACE &> /dev/null || kubectl create secret generic api-key --from-literal=api-key=${API_KEY} -n $MCP_AGENTIC_DREMIO_NAMESPACE
 
 [ ! -z $HOST_IP ] && sed -e "s/HOST_IP/${HOST_IP}/" ./demo/data-mgmt-portal-deploy/values.template.yaml > ./demo/data-mgmt-portal-deploy/values.yaml
 

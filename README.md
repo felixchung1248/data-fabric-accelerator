@@ -16,7 +16,7 @@ As you know, a modernized data management is not only IT-managed, but also a mor
 - GenAI chatbot to query internal data 
 
 ## Prerequisite
-1. Prepare a machine running in Ubuntu with Internet access. (Mine was Ubuntu 20.04 with 8vcpu / 32g memory in Azure Southeast Asia when I developed this platform). I recommend a new and clean machine to avoid any issue
+1. Prepare a machine running in Ubuntu with Internet access. (Mine was Ubuntu 24 with 8vcpu / 32g memory in Azure Southeast Asia when I developed this platform). I recommend a new and clean machine to avoid any issue
 2. Download this repository into your machine
 3. (Optional) Run the below setup scripts as below to install Docker if your machine doesn't have it
 ```bash
@@ -39,6 +39,13 @@ microk8s dashboard-proxy
 5. (Optional) Run the below setup scripts as below to install Helm if your machine doesn't have it
 ```bash
 ./data-fabric-accelerator/setup_helm.sh ## can skip if the machine has installed Helm
+```
+
+6a. (Optional) Go to openrouter.ai, register an account for some free GenAI models and create an API key
+
+6b. (Optional) Export API_KEY to use Agentic AI feature for data analytics
+```bash
+export API_KEY={your API key from openrouter.ai} ## can skip if the machine has installed Helm
 ```
 
 ## Installation

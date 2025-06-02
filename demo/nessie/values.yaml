@@ -118,7 +118,7 @@ log:
 # Note: the version store type CASSANDRA is deprecated, please use the Nessie Server Admin Tool to migrate to CASSANDRA2.
 # Note: the version store type DYNAMODB is deprecated, please use the Nessie Server Admin Tool to migrate to DYNAMODB2.
 # Note: the version store type MONGODB is deprecated, please use the Nessie Server Admin Tool to migrate to MONGODB2.
-versionStoreType: IN_MEMORY
+versionStoreType: ROCKSDB
 
 # Cassandra settings. Only required when using CASSANDRA version store type; ignored otherwise.
 cassandra:
@@ -138,7 +138,7 @@ cassandra:
 # RocksDB settings. Only required when using ROCKSDB version store type; ignored otherwise.
 rocksdb:
   # -- The storage class name of the persistent volume claim to create.
-  storageClassName: standard
+  storageClassName: 
   # -- The size of the persistent volume claim to create.
   storageSize: 1Gi
   # -- Labels to add to the persistent volume claim spec selector; a persistent volume with matching labels must exist.
@@ -985,3 +985,5 @@ extraInitContainers: []
     #   image: your-image
     #   imagePullPolicy: Always
     #   command: ['sh', '-c', 'echo "hello world"']
+
+nessieApiUrl: http://nessie.nessie-ns.svc.cluster.local:19120/api/v2
