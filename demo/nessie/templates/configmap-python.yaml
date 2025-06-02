@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: create-schema-python
-data:
-  create-schema.py: |-
-{{ .Files.Get "files/create-schema.py" | indent 4 }}
