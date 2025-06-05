@@ -114,6 +114,41 @@ spec:
                   echo $payload
                   response3=$(curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d "$payload" "{{$.Values.dremioUrl}}:{{$.Values.coordinator.web.port}}/api/v3/catalog")
                   echo $response3
+                  
+                  
+                  payload='{
+                    "config": {
+                        "nessieEndpoint": "{{$.Values.nessieUrl}}/api/v2",
+                        "nessieAuthType": "NONE",
+                        "asyncEnabled": false,
+                        "isCachingEnabled": false,
+                        "maxCacheSpacePct": 100,
+                        "credentialType": "ACCESS_KEY",
+                        "awsAccessKey": "minioadmin",
+                        "awsAccessSecret": "minioadmin",
+                        "awsRootPath": "/nessiesandboxdemo01",
+                        "propertyList": [
+                        {
+                            "name": "fs.s3a.path.style.access",
+                            "value": "true"
+                        },
+                        {
+                            "name": "fs.s3a.endpoint",
+                            "value": "minio.minio-ns.svc.cluster.local:9000"
+                        },
+                        {
+                            "name": "dremio.s3.compat",
+                            "value": "true"
+                        }
+                        ],
+                        "secure": false
+                    }
+                  }'
+
+                  echo $payload
+                  response4=$(curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d "$payload" "{{$.Values.dremioUrl}}:{{$.Values.coordinator.web.port}}/api/v3/catalog")
+                  echo $response4
+                  
                   break 
               else
                   echo "Website is not accessible (HTTP $response)"

@@ -33,6 +33,9 @@ spec:
               mc mb myminio/nessiedemo01
               mc policy set public myminio/nessiedemo01
               
+              mc mb myminio/nessiesandboxdemo01
+              mc policy set public myminio/nessiesandboxdemo01
+              
               # Create access key
               mc admin user svcacct add --access-key "minioadminkey" --secret-key "minioadminpw" myminio minioadmin
               mc admin policy attach myminio consoleAdmin --user "minioadminkey"

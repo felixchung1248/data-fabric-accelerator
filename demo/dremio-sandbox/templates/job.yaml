@@ -27,16 +27,16 @@ spec:
           for i in $(seq 1 $iterations)
           do
               # Perform the curl request and store the response
-              response=$(curl -s -w '%{http_code}\n' '{{$.Values.prodUrl}}:{{$.Values.coordinator.web.port}}/apiv2/login')
+              response=$(curl -s -w '%{http_code}\n' '{{$.Values.dremioUrl}}:{{$.Values.coordinator.web.port}}/apiv2/login')
 
               # Check the response code
               if [ "$response" -eq 401 ]; then
                   echo "Website is accessible "
-                  response1=$(curl -X POST -H 'Content-Type: application/json' -d '{"userName":"{{$.Values.userName}}","password":"{{$.Values.password}}"}' '{{$.Values.prodUrl}}:{{$.Values.coordinator.web.port}}/apiv2/login')
+                  response1=$(curl -X POST -H 'Content-Type: application/json' -d '{"userName":"{{$.Values.userName}}","password":"{{$.Values.password}}"}' '{{$.Values.dremioUrl}}:{{$.Values.coordinator.web.port}}/apiv2/login')
                   echo $response1
                   token=$(echo "$response1" | grep -oP '(?<="token":")[^"]+')
                   echo $token
-                  url2='{{$.Values.prodUrl}}:{{$.Values.coordinator.web.port}}/api/v3/catalog'
+                  url2='{{$.Values.dremioUrl}}:{{$.Values.coordinator.web.port}}/api/v3/catalog'
                   echo $url2
                   payload='{
                     "entityType": "{{ $.Values.ObjectStorage.S3.entityType }}",
@@ -74,7 +74,7 @@ spec:
                     "accelerationActivePolicyType": "{{  $.Values.ObjectStorage.S3.accelerationActivePolicyType }}"         
                   }'
                   echo $payload
-                  response2=$(curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d "$payload" "{{$.Values.prodUrl}}:{{$.Values.coordinator.web.port}}/api/v3/catalog")
+                  response2=$(curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d "$payload" "{{$.Values.dremioUrl}}:{{$.Values.coordinator.web.port}}/api/v3/catalog")
                   echo $response2
                   
                   payload='{
@@ -112,8 +112,53 @@ spec:
                   }'
 
                   echo $payload
-                  response3=$(curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d "$payload" "{{$.Values.prodUrl}}:{{$.Values.coordinator.web.port}}/api/v3/catalog")
+                  response3=$(curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d "$payload" "{{$.Values.dremioUrl}}:{{$.Values.coordinator.web.port}}/api/v3/catalog")
                   echo $response3
+                                 
+                  payload='{
+                    "entityType": "{{ $.Values.Catalog.Nessie.entityType }}",
+                    "config": {
+                        "nessieEndpoint": "{{$.Values.Catalog.Nessie.config.nessieUrl}}",
+                        "nessieAuthType": "{{$.Values.Catalog.Nessie.config.nessieAuthType}}",
+                        "asyncEnabled": {{$.Values.Catalog.Nessie.config.asyncEnabled}},
+                        "isCachingEnabled": {{$.Values.Catalog.Nessie.config.isCachingEnabled}},
+                        "maxCacheSpacePct": {{$.Values.Catalog.Nessie.config.maxCacheSpacePct}},
+                        "credentialType": "{{$.Values.Catalog.Nessie.config.credentialType}}",
+                        "awsAccessKey": "{{$.Values.Catalog.Nessie.config.awsAccessKey}}",
+                        "awsAccessSecret": "{{$.Values.Catalog.Nessie.config.awsAccessSecret}}",
+                        "awsRootPath": "{{$.Values.Catalog.Nessie.config.awsRootPath}}",
+                        "propertyList": [
+                        {
+                            "name": "fs.s3a.path.style.access",
+                            "value": "true"
+                        },
+                        {
+                            "name": "fs.s3a.endpoint",
+                            "value": "{{$.Values.Catalog.Nessie.endpoint}}"
+                        },
+                        {
+                            "name": "dremio.s3.compat",
+                            "value": "true"
+                        }
+                        ],
+                        "secure": {{$.Values.Catalog.Nessie.config.secure}}
+                    },
+                    "type": "NESSIE",
+                    "name": "{{ $.Values.Catalog.Nessie.name }}",
+                    "metadataPolicy":{
+                      "authTTLMs":"{{  $.Values.Catalog.Nessie.metadataPolicy.authTTLMs }}",
+                      "namesRefreshMs":"{{  $.Values.Catalog.Nessie.metadataPolicy.namesRefreshMs }}",
+                      "datasetRefreshAfterMs":"{{  $.Values.Catalog.Nessie.metadataPolicy.datasetRefreshAfterMs }}",
+                      "datasetUpdateMode":"{{  $.Values.Catalog.Nessie.metadataPolicy.datasetUpdateMode }}",
+                      "deleteUnavailableDatasets":"{{  $.Values.Catalog.Nessie.metadataPolicy.deleteUnavailableDatasets }}",
+                      "autoPromoteDatasets":"{{  $.Values.Catalog.Nessie.metadataPolicy.autoPromoteDatasets }}"
+                    },
+                    "accelerationActivePolicyType": "{{  $.Values.Catalog.Nessie.accelerationActivePolicyType }}"      
+                  }'
+
+                  echo $payload
+                  response4=$(curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d "$payload" "{{$.Values.dremioUrl}}:{{$.Values.coordinator.web.port}}/api/v3/catalog")
+                  echo $response4
                   break 
               else
                   echo "Website is not accessible (HTTP $response)"

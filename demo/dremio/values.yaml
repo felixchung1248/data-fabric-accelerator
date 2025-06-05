@@ -632,3 +632,28 @@ Database:
       namesRefreshMs: "3600000"
     name: "postgres-demo-01"
   type: "POSTGRES"
+  
+Catalog:
+  Nessie:
+    config:
+        nessieEndpoint: http://nessie.nessie-ns.svc.cluster.local:19120/api/v2
+        nessieAuthType: NONE
+        asyncEnabled: false
+        isCachingEnabled: false
+        maxCacheSpacePct: 100
+        credentialType: ACCESS_KEY
+        awsAccessKey: minioadmin
+        awsAccessKey: minioadmin
+        awsRootPath: /nessiedemo01
+        secure: false
+    entityType: "source"
+    metadataPolicy:
+      authTTLMs: "86400000"
+      autoPromoteDatasets: "false"
+      datasetExpireAfterMs: "10800000"
+      datasetRefreshAfterMs: "3600000"
+      datasetUpdateMode: "PREFETCH_QUERIED"
+      deleteUnavailableDatasets: "true"
+      namesRefreshMs: "3600000"
+    name: "nessie-01"
+    endpoint: minio.minio-ns.svc.cluster.local:9000

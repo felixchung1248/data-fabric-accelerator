@@ -17,4 +17,7 @@ ingress:
   proxySendTimeout: 300
   proxyReadTimeout: 300
   
-genAiModel: gpt-4-turbo
+genAiModel: deepseek/deepseek-chat-v3-0324:free
+dremioUrl: http://dremio.dremio-ns.svc.cluster.local:9047
+dremioUsr: dremio
+dremioPw: dremio123

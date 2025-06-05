@@ -19,8 +19,12 @@ spec:
           volumeMounts:
             - name: python-script-volume
               mountPath: /usr/src/app
-          command: ["python3"]
-          args: ["/usr/src/app/mcp-agentic-dremio.py"]
+          command: ["/bin/sh", "-c"]
+          args: 
+           - >
+              PAT=$(curl -X POST -H "Content-Type: application/json" -d '{"userName": "{{ .Values.dremioUsr }}","password": "{{ .Values.dremioPw }}"}') &&
+              uv run dremio-mcp-server config create dremioai --uri {{ .Values.dremioUrl }} --pat <dremio pat> &&
+              python3 /usr/src/app/mcp-agentic-dremio.py
           ports:
             - containerPort: {{ .Values.service.port }}
           env:
