@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -euo pipefail
 
 helm repo add apache-airflow https://airflow.apache.org
