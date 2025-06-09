@@ -82,6 +82,12 @@ template_spec = {
                 'emptyDir': {}
             }
         ],
+        'dynamicAllocation': {
+            'enabled': True,
+            'initialExecutors': 2,
+            'minExecutors': 2,
+            'maxExecutors': 4
+        },
         'deps': {
             'jars': [
                 'local:///opt/spark/jars-extra/iceberg-spark-runtime-3.5_2.12-1.9.0.jar',
