@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -euo pipefail
 
 helm repo add spark-operator https://kubeflow.github.io/spark-operator
