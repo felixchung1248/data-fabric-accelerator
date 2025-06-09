@@ -66,7 +66,7 @@ template_spec = {
     'kind': 'SparkApplication',
     'metadata': {
         'name': 'nessie-minio-dag',
-        'namespace': 'spark-job2'
+        'namespace': 'spark-operator'
     },
     'spec': {
         'type': 'Python',
@@ -165,7 +165,7 @@ template_spec = {
 
 spark_kubernetes_job = SparkKubernetesOperator(
     task_id=dag_name,
-    namespace='spark-job2',  # Kubernetes namespace
+    namespace='spark-operator',  # Kubernetes namespace
     template_spec=template_spec,  # Path to your spark application YAML file
     kubernetes_conn_id='test0',  # Connection ID for Kubernetes
     do_xcom_push=False,
