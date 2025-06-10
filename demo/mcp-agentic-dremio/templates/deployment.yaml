@@ -30,6 +30,8 @@ spec:
           env:
             - name: GENAI_MODEL
               value: {{ .Values.genAiModel }}
+            - name: MCP_PATH
+              value: {{ .Values.mcpPath }}
             - name: OPENROUTER_API_KEY
               valueFrom:
                 secretKeyRef:

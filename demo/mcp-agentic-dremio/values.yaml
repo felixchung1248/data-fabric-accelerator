@@ -21,3 +21,4 @@ genAiModel: deepseek/deepseek-chat-v3-0324:free
 dremioUrl: http://dremio.dremio-ns.svc.cluster.local:9047
 dremioUsr: dremio
 dremioPw: dremio123
+mcpPath: /usr/local/dremio-mcp

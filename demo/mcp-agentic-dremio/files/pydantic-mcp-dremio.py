@@ -13,6 +13,7 @@ from pydantic_ai.messages import ModelMessagesTypeAdapter
 
 api_key = os.environ.get("OPENROUTER_API_KEY")
 genai_model=os.environ['GENAI_MODEL']
+mcp_path=os.environ['MCP_PATH']
 
 model = OpenAIModel(
     genai_model,
@@ -24,7 +25,7 @@ server = MCPServerStdio(
     args=[
         "run",
         "--directory",
-        "C:\\Users\\felixchung\\dremio-mcp",
+        mcp_path,
         "dremio-mcp-server",
         "run",   
     ]
