@@ -118,7 +118,7 @@ spec:
                   payload='{
                     "entityType": "{{ $.Values.Catalog.Nessie.entityType }}",
                     "config": {
-                        "nessieEndpoint": "{{$.Values.Catalog.Nessie.config.nessieUrl}}",
+                        "nessieEndpoint": "{{$.Values.Catalog.Nessie.config.nessieEndpoint}}",
                         "nessieAuthType": "{{$.Values.Catalog.Nessie.config.nessieAuthType}}",
                         "asyncEnabled": {{$.Values.Catalog.Nessie.config.asyncEnabled}},
                         "isCachingEnabled": {{$.Values.Catalog.Nessie.config.isCachingEnabled}},

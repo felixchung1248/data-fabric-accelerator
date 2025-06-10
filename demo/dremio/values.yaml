@@ -635,6 +635,7 @@ Database:
   
 Catalog:
   Nessie:
+    accelerationActivePolicyType: "NEVER"
     config:
         nessieEndpoint: http://nessie.nessie-ns.svc.cluster.local:19120/api/v2
         nessieAuthType: NONE

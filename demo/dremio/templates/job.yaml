@@ -117,16 +117,17 @@ spec:
                   
                   
                   payload='{
+                    "entityType": "{{ $.Values.Catalog.Nessie.entityType }}",
                     "config": {
-                        "nessieEndpoint": "{{$.Values.nessieUrl}}/api/v2",
-                        "nessieAuthType": "NONE",
-                        "asyncEnabled": false,
-                        "isCachingEnabled": false,
-                        "maxCacheSpacePct": 100,
-                        "credentialType": "ACCESS_KEY",
-                        "awsAccessKey": "minioadmin",
-                        "awsAccessSecret": "minioadmin",
-                        "awsRootPath": "/nessiesandboxdemo01",
+                        "nessieEndpoint": "{{$.Values.Catalog.Nessie.config.nessieEndpoint}}",
+                        "nessieAuthType": "{{$.Values.Catalog.Nessie.config.nessieAuthType}}",
+                        "asyncEnabled": {{$.Values.Catalog.Nessie.config.asyncEnabled}},
+                        "isCachingEnabled": {{$.Values.Catalog.Nessie.config.isCachingEnabled}},
+                        "maxCacheSpacePct": {{$.Values.Catalog.Nessie.config.maxCacheSpacePct}},
+                        "credentialType": "{{$.Values.Catalog.Nessie.config.credentialType}}",
+                        "awsAccessKey": "{{$.Values.Catalog.Nessie.config.awsAccessKey}}",
+                        "awsAccessSecret": "{{$.Values.Catalog.Nessie.config.awsAccessSecret}}",
+                        "awsRootPath": "{{$.Values.Catalog.Nessie.config.awsRootPath}}",
                         "propertyList": [
                         {
                             "name": "fs.s3a.path.style.access",
@@ -134,15 +135,26 @@ spec:
                         },
                         {
                             "name": "fs.s3a.endpoint",
-                            "value": "minio.minio-ns.svc.cluster.local:9000"
+                            "value": "{{$.Values.Catalog.Nessie.endpoint}}"
                         },
                         {
                             "name": "dremio.s3.compat",
                             "value": "true"
                         }
                         ],
-                        "secure": false
-                    }
+                        "secure": {{$.Values.Catalog.Nessie.config.secure}}
+                    },
+                    "type": "NESSIE",
+                    "name": "{{ $.Values.Catalog.Nessie.name }}",
+                    "metadataPolicy":{
+                      "authTTLMs":"{{  $.Values.Catalog.Nessie.metadataPolicy.authTTLMs }}",
+                      "namesRefreshMs":"{{  $.Values.Catalog.Nessie.metadataPolicy.namesRefreshMs }}",
+                      "datasetRefreshAfterMs":"{{  $.Values.Catalog.Nessie.metadataPolicy.datasetRefreshAfterMs }}",
+                      "datasetUpdateMode":"{{  $.Values.Catalog.Nessie.metadataPolicy.datasetUpdateMode }}",
+                      "deleteUnavailableDatasets":"{{  $.Values.Catalog.Nessie.metadataPolicy.deleteUnavailableDatasets }}",
+                      "autoPromoteDatasets":"{{  $.Values.Catalog.Nessie.metadataPolicy.autoPromoteDatasets }}"
+                    },
+                    "accelerationActivePolicyType": "{{  $.Values.Catalog.Nessie.accelerationActivePolicyType }}"      
                   }'
 
                   echo $payload

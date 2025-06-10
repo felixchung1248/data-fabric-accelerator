@@ -580,7 +580,7 @@ service:
 # imagePullSecrets:
 #  - secretname
 
-dremioUrl: http://dremio-sandbox.dremio-sandbox-ns.svc.cluster.local
+dremioUrl: http://dremio-client.dremio-sandbox-ns.svc.cluster.local
 userName: dremio
 password: dremio123
 
@@ -635,6 +635,7 @@ Database:
   
 Catalog:
   Nessie:
+    accelerationActivePolicyType: "NEVER"
     config:
         nessieEndpoint: http://nessie-sandbox.nessie-sandbox-ns.svc.cluster.local:19120/api/v2
         nessieAuthType: NONE
