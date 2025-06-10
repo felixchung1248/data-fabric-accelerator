@@ -526,20 +526,10 @@ controller:
                 env:
                 - key: "DATAHUB_URL"
                   value: "http://datahub-datahub-gms.datahub-ns.svc.cluster.local:8080"
-                - key: "DENODO_META_PROD_URL"
+                - key: "DREMIO_PROD_URL"
                   value: "denodo-denodo-platform-service.denodo-ns.svc.cluster.local:9999"
-                - key: "DENODO_META_SANDBOX_URL"
+                - key: "DREMIO_SANDBOX_URL"
                   value: "denodo-denodo-platform-service.denodo-sandbox-ns.svc.cluster.local:9999"
-                - key: "DENODO_DOCKER_REGISTRY"
-                  value: "harbor.open.denodo.com"
-                - key: "DENODO_DOCKER_PROJECT_NAME"
-                  value: "denodo-9/images"
-                - key: "DENODO_DOCKER_IMAGE"
-                  value: "denodo-platform"
-                - key: "DOCKER_REGISTRY"
-                  value: "docker.io"
-                - key: "DOCKER_REGISTRY_CREDENTIALS_ID"
-                  value: "docker-registry-credential"
                 - key: "GOLDEN_DOCKER_IMAGE"
                   value: "demo-golden"
                 - key: "GOLDEN_DOCKER_TAG"
@@ -552,21 +542,21 @@ controller:
             system:
                 domainCredentials:
                 - credentials:
-                    - string:
-                        scope: GLOBAL
-                        id: "zammad-usr"
-                        secret: "admin@example.org"
-                        description: "Zammad admin user"
-                    - string:
-                        scope: GLOBAL
-                        id: "zammad-pw"
-                        secret: "ZAQ!2wsxcde3"
-                        description: "Zammad admin password"
                     - usernamePassword:
-                        id: "harbor-credentials"
-                        username: "DENODO_USR_VAL"
-                        password: "DENODO_PW_VAL"
-                        description: "Denodo Harbor Credentials"
+                        id: "zammad-credentials"
+                        username: "admin@example.org"
+                        password: "ZAQ!2wsxcde3"
+                        description: "Zammad Credentials"
+                    - usernamePassword:
+                        id: "dremio-prod-credentials"
+                        username: "dremio"
+                        password: "dremio123"
+                        description: "Dremio Prod environment Credentials"
+                    - usernamePassword:
+                        id: "dremio-sandbox-credentials"
+                        username: "dremio"
+                        password: "dremio123"
+                        description: "Dremio production sandbox environment Credentials"
         jobs:
             - script: >
                 folder('CD') {
@@ -613,7 +603,7 @@ controller:
                             scm {
                                 git {
                                     remote {
-                                        url('https://github.com/felixchung1248/dataset-deploy-pipeline-licensed.git')
+                                        url('https://github.com/felixchung1248/dataset-deploy-pipeline-dremio.git')
                                         credentials('git-credentials-id')
                                     }
                                     branches('*/main')
