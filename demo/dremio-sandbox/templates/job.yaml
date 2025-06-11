@@ -159,6 +159,11 @@ spec:
                   echo $payload
                   response4=$(curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d "$payload" "{{$.Values.dremioUrl}}:{{$.Values.coordinator.web.port}}/api/v3/catalog")
                   echo $response4
+                  
+                  payload='{"sql": "CREATE BRANCH feature01 IN \"{{ $.Values.Catalog.Nessie.name }}\""}'
+                  
+                  response5=$(curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d "$payload" "{{$.Values.dremioUrl}}:{{$.Values.coordinator.web.port}}/api/v3/sql")
+                  echo $response5
                   break 
               else
                   echo "Website is not accessible (HTTP $response)"

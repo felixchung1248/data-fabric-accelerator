@@ -14,7 +14,7 @@
 # automatically during redeployments and may negatively impact
 # the cluster.
 image: dremio/dremio-oss
-imageTag: latest
+imageTag: 25.1.1
 
 # Annotations, labels, node selectors, and tolerations
 #
@@ -644,7 +644,7 @@ Catalog:
         maxCacheSpacePct: 100
         credentialType: ACCESS_KEY
         awsAccessKey: minioadmin
-        awsAccessKey: minioadmin
+        awsAccessSecret: minioadmin
         awsRootPath: /nessiedemo01
         secure: false
     entityType: "source"
