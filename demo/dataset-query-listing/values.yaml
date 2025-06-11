@@ -1,11 +1,9 @@
 replicaCount: 1
 
 image:
-  repository: jtruongey/python-golden-image
+  repository: dataopennesscommunity/demo-golden
   pullPolicy: Always
   tag: "latest"
-  pullSecrets: 
-   - name: docker-registry-secret
 
 service:
   type: ClusterIP
@@ -16,5 +14,9 @@ ingress:
   enabled: true
   # annotations, hosts, and other configurations go here
 
-sandboxUrl: http://denodo-denodo-platform-service.denodo-sandbox-ns:9090/denodo-restfulws
-prodUrl: http://denodo-denodo-platform-service.denodo-ns:9090/denodo-restfulws
+sandboxUrl: http://dremio-client.dremio-sandbox-ns.svc.cluster.local:9047
+prodUrl: http://dremio.dremio-ns.svc.cluster.local:9047
+sandboxUsr: dremio
+sandboxPw: dremio123
+prodUsr: dremio
+prodPw: dremio123

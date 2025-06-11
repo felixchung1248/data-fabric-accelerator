@@ -2,19 +2,97 @@ from flask import Flask, request, jsonify
 import requests
 import logging
 import os
-from requests.auth import HTTPBasicAuth
-from bs4 import BeautifulSoup
 import json
-import psycopg2 as dbdriver
-import re
 
 app = Flask(__name__)
-sandbox_url = os.environ['SANDBOX_URL']
-prod_url = os.environ['PROD_URL']
-sandbox_username = os.environ['SANDBOX_USERNAME']
-sandbox_password = os.environ['SANDBOX_PASSWORD']
-prod_username = os.environ['PROD_USERNAME']
-prod_password = os.environ['PROD_PASSWORD']
+sandbox_endpoint = os.environ['SANDBOX_URL']
+prod_endpoint = os.environ['PROD_URL']
+sandbox_usr = os.environ['SANDBOX_USERNAME']
+sandbox_pw = os.environ['SANDBOX_PASSWORD']
+prod_usr = os.environ['PROD_USERNAME']
+prod_pw = os.environ['PROD_PASSWORD']
+
+def login(username, password, dremioServer):
+  # we login using the old api for now
+  loginData = {'userName': username, 'password': password}
+  headers = {'content-type':'application/json'}
+  response = requests.post('{server}/apiv2/login'.format(server=dremioServer), headers=headers, data=json.dumps(loginData))
+  data = json.loads(response.text)
+  # retrieve the login token
+  token = data['token']
+  return token
+
+accesstoken_sandbox = login(sandbox_usr, sandbox_pw, sandbox_endpoint)
+accesstoken_production = login(prod_usr,prod_pw,prod_endpoint)
+
+def get_dataset_desc(catalog, dataset_path,name,env):
+    payload = {
+        "sql": f"""
+                select 
+                    COLUMN_NAME
+                    ,IS_NULLABLE
+                    ,DATA_TYPE
+                from 
+                    INFORMATION_SCHEMA.COLUMNS c
+                where
+                    c.TABLE_CATALOG = '{catalog}'
+                    and c.TABLE_SCHEMA = '{dataset_path}'
+                    and c.TABLE_NAME = '{name}'
+                """
+    }   
+    return query(payload,None)
+
+def query(payload,env):
+    if env == 'PROD':
+        endpoint = prod_endpoint
+        token = accesstoken_production
+    else:
+        endpoint = sandbox_endpoint
+        token = accesstoken_sandbox
+        
+    response = requests.post(
+        f"{endpoint}/api/v3/sql",
+        headers={"Authorization": f"Bearer {token}"},
+        json=payload
+    )   
+        
+    if response.status_code == 200:
+        jobId = response.json().get("id")
+        while True:
+            response = requests.get(
+                f"{endpoint}/api/v3/job/{jobId}",
+                headers={"Authorization": f"Bearer {token}"},
+            )
+            if response.status_code == 200:
+                jobStatus = response.json().get("jobState")
+                if jobStatus == "COMPLETED":
+                    result = requests.get(
+                                    f"{endpoint}/api/v3/job/{jobId}/results",
+                                    headers={"Authorization": f"Bearer {token}"},
+                                )
+                    rows = result.json().get("rows")
+                    return rows
+                if jobStatus == "CANCELED" or jobStatus == "FAILED":
+                    return None
+            else:  
+                break
+    else:
+        print(f"Failed to get job details")
+    
+def get_dataset_metadata(env):
+    payload = {
+        "sql": """
+                select 
+                    v.TABLE_SCHEMA
+                    ,v.TABLE_NAME
+                    ,v.VIEW_DEFINITION
+                    ,v.TABLE_CATALOG
+                from 
+                    INFORMATION_SCHEMA.VIEWS v
+                """
+    }
+    return query(payload,None)
+
 
 
 @app.after_request
@@ -31,149 +109,25 @@ def after_request(response):
 @app.route('/listalldatasets', methods=['GET'])
 def ListAllDatasets():
     logging.info('ListAllDatasets function processed a request.')
-    env = request.args.get('env')
-    db = request.args.get('db')
-    if env == 'PROD':
-        url = prod_url
-        username = prod_username
-        password = prod_password
-    else:
-        url = sandbox_url
-        username = sandbox_username
-        password = sandbox_password
-
-    params = {
-        '$format': 'json'
-    }
-
-    if db:
-        response = requests.get(
-            f"{url}/{db}",
-            auth=HTTPBasicAuth(username, password),
-            params=params
-        )
-        
-
-    else:
-        return jsonify({"message": "No db parameter provided"}), 400
-
-
-    if response.status_code == 200:
-        response_json = response.json()
-        view_list = response_json['views-metadata']
-        catalog_names = [item['name'] for item in view_list]
-    else:
-        print(f"Failed to get metadata for dataset: {response.content}")
-
-    return jsonify(catalog_names)
+    env = request.args.get('env')    
+    return jsonify(get_dataset_metadata(env))
 
 @app.route('/showdatasetdesc', methods=['GET'])
 def ShowDatasetDesc():
     logging.info('ShowDatasetDesc function processed a request.')
     name = request.args.get('name')
-    db = request.args.get('db')
+    path = request.args.get('path')
+    catalog = request.args.get('catalog')
+    env = request.args.get('env')
 
-    if name and db:
-        env = request.args.get('env')
-        if env == 'PROD':
-            url = prod_url
-            username = prod_username
-            password = prod_password
-        else:
-            url = sandbox_url
-            username = sandbox_username
-            password = sandbox_password
-
-        params = {
-            '$format': 'json'
-        }
-
-        response = requests.get(
-            f"{url}/{db}/views/{name}/$schema",
-            auth=HTTPBasicAuth(username, password),
-            params=params
-        )
-
-        if response is not None:
-            data = response.json()
-            # Extract the "properties" dictionary
-            properties = data.get("properties", {})
-
-            # Transform the "properties" dictionary into the desired list of dictionaries
-            result = [{"name": key, "type": value["type"]} for key, value in properties.items()]
-            return result
+    if name:
+        result = get_dataset_desc(catalog,path,name,env)
+        if result is not None:
+            return jsonify(result)
         else:
             return jsonify({"error": "Failed to retrieve dataset description"}), 500
     else:
-        return jsonify({"message": "No name or db parameter provided"}), 400
-
-
-def check_access(user, dataset_name):
-    denodoserver_name = "denodo-denodo-platform-service.denodo-ns"
-
-    ## Default port for ODBC connections
-    denodoserver_odbc_port = "9996"
-    denodoserver_database = "admin"
-    denodoserver_uid = "admin"
-    denodoserver_pwd = "admin"
-
-    ## Establishing a connection
-    cnxn = dbdriver.connect(
-        dbname=denodoserver_database,
-        user=denodoserver_uid,
-        password=denodoserver_pwd,
-        host=denodoserver_name,
-        port=denodoserver_odbc_port,
-    )
-
-    query = f"desc vql view {dataset_name} ('includeUserPrivileges' = 'yes')"
-    cur = cnxn.cursor()
-    cur.execute(query)
-    results = cur.fetchall()
-    dataset_description = results[0][0]
-    user_privileges = "# #######################################\n# USER PRIVILEGES\n# #######################################\n"
-    role_privileges = "# #######################################\n# ROLE PRIVILEGES\n# #######################################\n"
-    idx1 = dataset_description.find(user_privileges)
-    idx2 = dataset_description.find(role_privileges)
-    users = dataset_description[idx1+len(user_privileges):idx2]
-    users = re.findall("ALTER USER (\w*)", users)
-
-    return user in users
-
-
-@app.route('/check-user-access', methods=['GET'])
-def check_user_access():
-    user = request.args.get("username")
-
-    denodoserver_name = "denodo-denodo-platform-service.denodo-ns"
-
-    ## Default port for ODBC connections
-    denodoserver_odbc_port = "9996"
-    denodoserver_database = "admin"
-    denodoserver_uid = "admin"
-    denodoserver_pwd = "admin"
-
-    ## Establishing a connection
-    cnxn = dbdriver.connect(
-        dbname=denodoserver_database,
-        user=denodoserver_uid,
-        password=denodoserver_pwd,
-        host=denodoserver_name,
-        port=denodoserver_odbc_port,
-    )
-
-    query = f"list views base"
-    cur = cnxn.cursor()
-    cur.execute(query)
-    results = cur.fetchall()
-    views = [view for row in results for view in row]
-    datasets_access = []
-    for view in views:
-        if check_access(user, view):
-            datasets_access.append(view)
-
-    return datasets_access
-
+        return jsonify({"message": "No name parameter provided"}), 400
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5005)
