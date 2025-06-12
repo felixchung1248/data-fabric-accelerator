@@ -15,7 +15,7 @@ ingress:
   # annotations, hosts, and other configurations go here
 
 sandboxUrl: http://dremio-client.dremio-sandbox-ns.svc.cluster.local:9047
-prodUrl: http://dremio.dremio-ns.svc.cluster.local:9047
+prodUrl: http://dremio-client.dremio-ns.svc.cluster.local:9047
 sandboxUsr: dremio
 sandboxPw: dremio123
 prodUsr: dremio
