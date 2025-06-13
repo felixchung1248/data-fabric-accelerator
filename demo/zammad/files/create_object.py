@@ -131,6 +131,43 @@ if __name__ == '__main__':
            }
         }
     }
+    
+    data3 = {
+        "name": "schemaname",
+        "object": "Ticket",
+        "display": "Schema Name",
+        "active": "true",
+        "position": 902,
+        "data_type": "input",
+        "data_option": {
+           "type": "text",
+           "maxlength": 120
+        },
+        "screens": {
+           "create_middle": {
+              "ticket.customer": {
+                 "shown": "true",
+                 "required": "false",
+                 "item_class": "column"
+              },
+              "ticket.agent": {
+                 "shown": "true",
+                 "required": "false",
+                 "item_class": "column"
+              }
+           },
+           "edit": {
+              "ticket.customer": {
+                 "shown": "true",
+                 "required": "false"
+              },
+              "ticket.agent": {
+                 "shown": "true",
+                 "required": "false"
+              }
+           }
+        }
+    }
 
     # Basic auth credentials
     username = os.environ["USERNAME"]
@@ -141,6 +178,7 @@ if __name__ == '__main__':
     # Send the POST request
     response1 = post_data(url, username, password, data1)
     response2 = post_data(url, username, password, data2)
+    response2b = post_data(url, username, password, data3)
     response3 = post_data(f"{host}/api/v1/object_manager_attributes_execute_migrations", username, password)
 
     response4 = requests.delete(f"{host}/api/v1/tickets/1", auth=HTTPBasicAuth(username, password), headers={'Content-Type': 'application/json'})
@@ -150,5 +188,7 @@ if __name__ == '__main__':
     print("Response Body:", response1.text)
     print("Status Code:", response2.status_code)
     print("Response Body:", response2.text)
+    print("Status Code:", response2b.status_code)
+    print("Response Body:", response2b.text)
     print("Status Code:", response3.status_code)
     print("Response Body:", response3.text)
