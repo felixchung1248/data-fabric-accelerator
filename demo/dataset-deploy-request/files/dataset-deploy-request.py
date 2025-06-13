@@ -38,6 +38,7 @@ def submitTicket():
                     'data_type']
     
     datasetPath = data.get("dataset_path")
+    schema = data.get("schema")
     customer = data.get("customer")
     description = data.get("table_description")
 
@@ -75,6 +76,7 @@ def submitTicket():
         "customer": customer,
         "approved": False,
         "datasetname": datasetPath,
+        "schemaname": schema,
         "article": {
            "subject": "Request dataset deployment",
            "body": description,
