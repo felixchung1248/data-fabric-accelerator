@@ -29,13 +29,13 @@ spec:
             - name: PROD_URL
               value: {{ .Values.prodUrl }}
             - name: SANDBOX_USERNAME
-              value: admin
+              value: {{ .Values.sandboxUsr }}
             - name: SANDBOX_PASSWORD
-              value: admin
+              value: {{ .Values.sandboxPw }}
             - name: PROD_USERNAME
-              value: admin
+              value: {{ .Values.prodUsr }}
             - name: PROD_PASSWORD
-              value: admin
+              value: {{ .Values.prodPw }}
       volumes:
         - name: python-script-volume
           configMap:
