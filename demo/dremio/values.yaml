@@ -580,7 +580,7 @@ service:
 # imagePullSecrets:
 #  - secretname
 
-dremioUrl: http://dremio.dremio-ns.svc.cluster.local
+dremioUrl: http://dremio-client.dremio-ns.svc.cluster.local
 userName: dremio
 password: dremio123
 
