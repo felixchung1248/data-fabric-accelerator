@@ -567,6 +567,7 @@ controller:
                     parameters {
                         stringParam('TICKET_ID', '', 'Ticket ID ')
                         stringParam('DATASET_NAME', '', 'Dataset name for deployment')
+                        stringParam('SCHEMA_NAME', '', 'Schema name for deployment')
                         stringParam('DATASET_OWNER', '', 'Dataset owner')
                         stringParam('DATASET_DESCRIPTION', '', 'Dataset description')
                     }
@@ -575,6 +576,10 @@ controller:
                             genericRequestVariables {
                                 genericRequestVariable {
                                     key("DATASET_NAME")
+                                    regexpFilter("")
+                                }
+                                genericRequestVariable {
+                                    key("SCHEMA_NAME")
                                     regexpFilter("")
                                 }
                                 genericRequestVariable {
@@ -604,7 +609,6 @@ controller:
                                 git {
                                     remote {
                                         url('https://github.com/felixchung1248/dataset-deploy-pipeline-dremio.git')
-                                        credentials('git-credentials-id')
                                     }
                                     branches('*/main')
                                     scriptPath('Jenkinsfile')
