@@ -13,6 +13,10 @@ sandbox_password = os.environ['SANDBOX_PASSWORD']
 prod_username = os.environ['PROD_USERNAME']
 prod_password = os.environ['PROD_PASSWORD']
 
+def format_schema(schema):
+    # Split the schema string by '.' and wrap each part with quotes
+    return ".".join(f'"{part}"' for part in schema.split('.'))
+
 def login(username, password, dremioServer):
   # we login using the old api for now
   loginData = {'userName': username, 'password': password}
@@ -83,22 +87,22 @@ def PropagateDatasets():
     view = request.args.get('view')
     schema = request.args.get('schema')
     count = request.args.get('count', type = str)
-
-    if env == 'PROD':
-        url = prod_url
-        username = prod_username
-        password = prod_password
+    
+    if schema is not None:
+       sql_str = f"""
+                    select 
+                        *
+                    from 
+                        "{schema}"."{view}"
+                    """
     else:
-        url = sandbox_url
-        username = sandbox_username
-        password = sandbox_password
-
-    sql_str = f"""
-                select 
-                    *
-                from 
-                    "{schema}"."{view}"
-                """
+       sql_str = f"""
+                    select 
+                        *
+                    from 
+                        {format_schema(view)}
+                    """ 
+                    
     if count is not None and count.isdigit():
         sql_str = sql_str + f" limit {count}"
     else:
@@ -108,7 +112,7 @@ def PropagateDatasets():
         "sql": sql_str
     } 
     
-    response = query(payload,None)
+    response = query(payload,env)
 
     if response is not None:
         response_json = json.dumps(response)
