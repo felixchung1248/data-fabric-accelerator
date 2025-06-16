@@ -31,6 +31,7 @@ def ApproveTicket():
     dataset_name = request.args.get('datasetName', default=None)
     dataset_owner = request.args.get('datasetOwner', default=None)
     dataset_description = request.args.get('datasetDescription', default=None)
+    schema_name = request.args.get('schemaName', default=None)
     data = {
         'approved': 'true'
     }
@@ -47,6 +48,7 @@ def ApproveTicket():
             ,'TICKET_ID': ticket_id
             ,'DATASET_OWNER': dataset_owner
             ,'DATASET_DESCRIPTION': dataset_description
+            ,'SCHEMA_NAME': schema_name
         }
 
         params = {'token':'deploy'}
@@ -79,51 +81,6 @@ def reject_ticket():
         return "Ticket has been successfully rejected"
     else:
         return "Ticket couldn't be rejected"
-
-
-@app.route('/approve-access', methods=['PUT'])
-def approve_access():
-    ticket_id = request.args.get('ticketId', default=None)
-    dataset_name = request.args.get('datasetName', default=None)
-    user = request.args.get('user', default=None)
-    data = {
-        'approved': 'true'
-    }
-
-    response = requests.put(
-       f"{url}/api/v1/tickets/{ticket_id}",
-       auth=HTTPBasicAuth(username, password)
-       ,data=data
-    )
-
-    if response.status_code == 200:
-        data = {
-            'DATASET_NAME': dataset_name,
-            'TICKET_ID': ticket_id,
-            'USER': user
-        }
-
-        denodoserver_name = "denodo-denodo-platform-service.denodo-ns"
-
-        ## Default port for ODBC connections
-        denodoserver_odbc_port = "9996"
-        denodoserver_database = "admin"
-        denodoserver_uid = "admin"
-        denodoserver_pwd = "admin"
-
-        ## Establishing a connection
-        cnxn = dbdriver.connect(
-            dbname=denodoserver_database,
-            user=denodoserver_uid,
-            password=denodoserver_pwd,
-            host=denodoserver_name,
-            port=denodoserver_odbc_port,
-        )
-
-        query = f"alter user {user} grant execute on admin.{dataset_name}"
-        cur = cnxn.cursor()
-        cur.execute(query)
-        return "Ticket has been successfully approved"
 
 @app.route('/listticket', methods=['GET'])
 def ListTicket():
