@@ -656,7 +656,7 @@ Catalog:
       datasetUpdateMode: "PREFETCH_QUERIED"
       deleteUnavailableDatasets: "true"
       namesRefreshMs: "3600000"
-    name: "nessie-sandbox-01"
+    name: "nessie-01"
     endpoint: minio.minio-ns.svc.cluster.local:9000
     
     
