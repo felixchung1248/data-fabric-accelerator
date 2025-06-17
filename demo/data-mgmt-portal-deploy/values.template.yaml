@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: dataopennesscommunity/demo-react
+  repository: dataopennesscommunity/data-portal
   pullPolicy: Always
   tag: "latest"
 
