@@ -18,7 +18,7 @@ spec:
 
 
           # Number of times to check the website
-          iterations=20
+          iterations=999
 
           # Delay between each check (in seconds)
           delay=10
