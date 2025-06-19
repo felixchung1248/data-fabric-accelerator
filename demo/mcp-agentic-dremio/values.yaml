@@ -17,8 +17,8 @@ ingress:
   proxySendTimeout: 300
   proxyReadTimeout: 300
   
-genAiModel: deepseek/deepseek-chat-v3-0324:free
-dremioUrl: http://dremio.dremio-ns.svc.cluster.local:9047
+genAiModel: anthropic/claude-sonnet-4
+dremioUrl: http://dremio-client.dremio-ns.svc.cluster.local:9047
 dremioUsr: dremio
 dremioPw: dremio123
 mcpPath: /usr/local/dremio-mcp

@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: mcp-agentic-dremio
 data:
-  langchain-chatbot-denodo.py: |-
+  pydantic-mcp-dremio.py: |-
 {{ .Files.Get "files/pydantic-mcp-dremio.py" | indent 4 }}

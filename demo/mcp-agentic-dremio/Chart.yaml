@@ -1,4 +1,4 @@
 apiVersion: v2
-name: langchain-chatbot-denodo
+name: agentic-dremio
 description: A Helm chart for a service to respond result based on human language input
 version: 0.1.0

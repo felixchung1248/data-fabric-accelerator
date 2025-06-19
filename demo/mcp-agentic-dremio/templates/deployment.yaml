@@ -19,12 +19,36 @@ spec:
           volumeMounts:
             - name: python-script-volume
               mountPath: /usr/src/app
-          command: ["/bin/sh", "-c"]
+          command: ["/bin/bash", "-c"]
           args: 
-           - >
-              PAT=$(curl -X POST -H "Content-Type: application/json" -d '{"userName": "{{ .Values.dremioUsr }}","password": "{{ .Values.dremioPw }}"}') &&
-              uv run dremio-mcp-server config create dremioai --uri {{ .Values.dremioUrl }} --pat <dremio pat> &&
-              python3 /usr/src/app/mcp-agentic-dremio.py
+           - |
+              # Number of times to check the website
+              iterations=999
+
+              # Delay between each check (in seconds)
+              delay=10
+              
+              # Loop for the specified number of iterations
+              for i in $(seq 1 $iterations)
+              do
+                # Perform the curl request and store the response
+                response=$(curl -s -w '%{http_code}\n' '{{ .Values.dremioUrl }}/apiv2/login')
+
+                # Check the response code
+                if [ "$response" -eq 401 ]; then
+                  response1=$(curl -X POST -H 'Content-Type: application/json' -d '{"userName":"{{ .Values.dremioUsr }}","password":"{{ .Values.dremioPw }}"}' '{{ .Values.dremioUrl }}/apiv2/login')
+                  echo $response1
+                  token=$(echo "$response1" | grep -oP '(?<="token":")[^"]+')
+                  echo $token
+                  cd /usr/local/dremio-mcp
+                  /root/.local/bin/uv run dremio-mcp-server config create dremioai --uri {{ .Values.dremioUrl }} --pat $token
+                  python3 /usr/src/app/pydantic-mcp-dremio.py
+                  break 
+                else
+                  echo "Website is not accessible (HTTP $response)"
+                fi
+              done
+                            
           ports:
             - containerPort: {{ .Values.service.port }}
           env:
