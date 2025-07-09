@@ -120,7 +120,7 @@ extraSecretEnv: {}
   #  SUPERSET_SECRET_KEY: 'CHANGE_ME_TO_A_COMPLEX_RANDOM_SECRET'
 
 # -- Extra files to be mounted as ConfigMap on the path specified in `extraConfigMountPath`
-extraConfigs: {}
+extraConfigs:
    import_datasources.yaml: |
        databases:
        - allow_file_upload: true
@@ -189,7 +189,8 @@ configOverrides:
    secret: |
      # Generate your own secret key for encryption. Use `openssl rand -base64 42` to generate a good key
      SECRET_KEY = 'ZAQ!2wsxcde3'
-
+   my_override: |
+     FAB_ADD_SECURITY_API = True
 # -- Same as above but the values are files
 configOverridesFiles: {}
   # extend_timeout: extend_timeout.py
@@ -909,3 +910,8 @@ topologySpreadConstraints: []
 
 # -- Set priorityClassName for superset pods
 priorityClassName: ~
+
+supersetUrl: "http://superset.superset-ns.svc.cluster.local:8088"
+
+userRoles: '[{"name": "Custom_Role"}]'
+users: '[{"first_name": "Felix","last_name": "Chung","username": "felix","email": "felix@example.org","password": "ZAQ!2wsxcde3","roles": ["Custom_Role"]},{"first_name": "John","last_name": "Wong","username": "john","email": "john@example.org","password": "ZAQ!2wsxcde3","roles": ["Custom_Role"]}]'

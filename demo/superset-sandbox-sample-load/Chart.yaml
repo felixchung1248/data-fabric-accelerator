@@ -1,0 +1,4 @@
+apiVersion: v2
+name: superset-sample-load
+description: A Helm chart for a job to import sample dashboard and create sample users
+version: 0.1.0

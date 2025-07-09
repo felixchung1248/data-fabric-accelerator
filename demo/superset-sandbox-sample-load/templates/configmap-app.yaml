@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-configmap
+data:
+  create-superset-user.py: |-
+{{ .Files.Get "files/create-superset-user.py" | indent 4 }}
+  import-sample-dashboard.py: |-
+{{ .Files.Get "files/import-sample-dashboard.py" | indent 4 }}
+  dashboard_export_20250702T035612.zip: |
+{{ .Files.Get "files/dashboard_export_20250702T035612.zip" | b64enc | indent 4 }}

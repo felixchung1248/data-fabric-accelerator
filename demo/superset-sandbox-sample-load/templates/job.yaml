@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sample-config-job
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: sample-config-job-container
+        image: dataopennesscommunity/demo-golden:latest
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+            python3 /usr/src/app/create-superset-user.py &&
+            python3 /usr/src/app/import-sample-dashboard.py
+        env:
+            - name: SUPERSET_URL
+              value: {{ .Values.supersetUrl | quote }}
+            - name: USER_ROLES
+              value: {{ .Values.userRoles | quote }}
+            - name: USERS
+              value: {{ .Values.users | quote }}
+            - name: SUPERSET_USER
+              value: {{ .Values.init.adminUser.username | quote }}
+            - name: SUPERSET_PW
+              value: {{ .Values.init.adminUser.password | quote }}
+            - name: DASHBOARD_PATH
+              value: /usr/src/app/dashboard_export_20250702T035612.zip  
+        volumeMounts:
+          - name: app-volume
+            mountPath: /usr/src/app/create-superset-user.py
+            subPath: create-superset-user.py
+          - name: app-volume
+            mountPath: /usr/src/app/import-sample-dashboard.py
+            subPath: import-sample-dashboard.py
+          - name: app-volume
+            mountPath: /usr/src/app/dashboard_export_20250702T035612.zip
+            subPath: dashboard_export_20250702T035612.zip  
+      volumes:
+        - name: app-volume
+          configMap:
+            name: app-configmap
+  backoffLimit: 0
+
+

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: create-superset-user-configmap
+data:
+  create-superset-user.py: |-
+{{ .Files.Get "files/create-superset-user.py" | indent 4 }}

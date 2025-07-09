@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-superset-user
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: create-superset-user-container
+        image: dataopennesscommunity/demo-golden:latest
+        command: ["python3"]
+        args: ["/usr/src/app/create-superset-user.py"]
+        env:
+            - name: SUPERSET_URL
+              value: {{ .Values.supersetUrl }}
+            - name: USER_ROLES
+              value: {{ .Values.userRoles }}
+            - name: USERS
+              value: {{ .Values.users }}
+            - name: SUPERSET_USER
+              value: {{ .Values.init.adminUser.username }}
+            - name: SUPERSET_PW
+              value: {{ .Values.init.adminUser.password }}
+      volumes:
+        - name: python-script-volume
+          configMap:
+            name: create-superset-user-configmap
+            items:
+              - key: create-superset-user
+                path: create-superset-user
+  backoffLimit: 0
+
+
