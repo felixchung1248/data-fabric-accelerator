@@ -69,8 +69,11 @@ chmod +x data-fabric-accelerator/setup*.sh
 | Application | URL    | Description |
 | :-------- | :------- | :------- |
 | Data management portal | http://`<Your VM IP>`:30030 | Centralized portal for necessary data activities, e.g. dataset deployment, GenAI chatbot |
-| Dremio Production | http://`<Your VM IP>`:30047 | Core data platform for data users to perform testing |
+| Dremio Sandbox | http://`<Your VM IP>`:31047 | Core data platform for data users to perform testing with production data|
+| Dremio Production | http://`<Your VM IP>`:30047 | Core data platform for production |
 | DataHub | http://`<Your VM IP>`:31002  | Data Catalog and data lineage |
+| Superset Sandbox | http://`<Your VM IP>`:31888  | Dashboard platform for data users to create and test dashboards with production data |
+| Superset Production | http://`<Your VM IP>`:30888  | Dashboard platform for production |
 | Zammad | http://`<Your VM IP>`:30880  | ITSM (not necessary for data platform but to provide end-to-end governed data workflow) |
 | Jenkins | http://`<Your VM IP>`:30808  | CD pipeline for dataset deployment |
 | MinIO | http://`<Your VM IP>`:31090  | Object storage for user drop zone |
