@@ -12,6 +12,7 @@ spec:
         command: ["/bin/bash", "-c"]
         args:
           - |
+            base64 -d /usr/src/app/dashboard_export_20250702T035612.zip > /usr/src/app/dashboard.zip
             python3 /usr/src/app/create-superset-user.py &&
             python3 /usr/src/app/import-sample-dashboard.py
         env:
@@ -27,6 +28,12 @@ spec:
               value: {{ .Values.init.adminUser.password | quote }}
             - name: DASHBOARD_PATH
               value: /usr/src/app/dashboard_export_20250702T035612.zip  
+            - name: UPLOAD_USER
+              value: {{ .Values.uploadUser | quote }}
+            - name: UPLOAD_PW
+              value: {{ .Values.uploadPw | quote }}
+            - name: PERMISSIONS
+              value: {{ .Values.permissions | quote }}
         volumeMounts:
           - name: app-volume
             mountPath: /usr/src/app/create-superset-user.py

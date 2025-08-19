@@ -3,18 +3,18 @@ import os
 import time
 
 # Superset API URL and Bearer Token
-# superset_url = os.environ['SUPERSET_URL']
-superset_url = "http://4.194.5.134:31888"
-dashboard_path = os.environ['DASHBOARD_PATH']
-superset_usr = os.environ['SUPERSET_USER']
-superset_pw = os.environ['SUPERSET_PW']
+superset_url = os.environ['SUPERSET_URL']
+#superset_url = "http://4.194.5.134:31888"
+dashboard_path = "/usr/src/app/dashboard.zip"
+superset_usr = os.environ['UPLOAD_USER']
+superset_pw = os.environ['UPLOAD_PW']
 
 class Importer:
     def __init__(self):
         self.session = requests.Session()
         self.wait_for_superset_service()
         self.get_superset_access_token()
-        # self.get_csrf_token()
+        self.get_csrf_token()
         
     def wait_for_superset_service(self, timeout=300, sleep_interval=5):
         """
@@ -86,6 +86,8 @@ class Importer:
     def import_dashboard(self, zip_file_path):
         endpoint = "/api/v1/dashboard/import/"
         url = f"{superset_url}{endpoint}"
+        print(f"zip_file_path: {zip_file_path}")
+        #time.sleep(100000)
         with open(zip_file_path, 'rb') as infile:
             files = {'formData': ('dashboard.zip', infile.read(), 'application/zip')}
         # payload={

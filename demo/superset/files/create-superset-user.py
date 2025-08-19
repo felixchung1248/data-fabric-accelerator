@@ -1,7 +1,6 @@
 import requests
 import os
 import json
-import time
 
 # Function to look up id by name
 def get_id_by_name(name, data):
@@ -12,30 +11,6 @@ def get_id_by_name(name, data):
 
 # Superset API URL and Bearer Token
 superset_url = os.environ['SUPERSET_URL']
-
-endpoint = "/health"
-url = f"{superset_url}{endpoint}"
-start_time = time.time()
-
-print("Waiting for Superset service to be up...")
-timeout=300
-sleep_interval=5
-
-while True:
-    try:
-        response = requests.get(url, timeout=5)
-        if response.status_code == 200:
-            print("Superset service is up!")
-            break
-    except requests.exceptions.RequestException:
-        pass  # Ignore connection errors and keep retrying
-    
-    elapsed_time = time.time() - start_time
-    if elapsed_time > timeout:
-        raise Exception(f"Superset service did not become available within {timeout} seconds")
-    
-    print(f"Superset service not available yet, retrying in {sleep_interval} seconds...")
-    time.sleep(sleep_interval)
 
 # Headers for the API request
 headers = {
@@ -74,17 +49,10 @@ roles = role_responses.json().get('result')
 user_str = os.environ['USERS']
 users = json.loads(user_str)
 
-permissions_str = os.environ['PERMISSIONS']
-permissions = json.loads(permissions_str)
-
 for user in users:
     roleNames = user.get('roles')
     roleIds = []
     for roleName in roleNames:
-        roleId = get_id_by_name(roleName,roles)
-        roleIds.append(roleId)
+        roleIds.append(get_id_by_name(roleName,roles))
         user['roles'] = roleIds
-        response = requests.post(superset_url+f"/api/v1/security/roles/{roleId}/permissions", headers=headers, json=permissions)
-        print(response.text)
         response = requests.post(superset_url+"/api/v1/security/users", headers=headers, json=user)
-        print(response.text)

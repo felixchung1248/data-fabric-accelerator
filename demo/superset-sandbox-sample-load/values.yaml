@@ -6,4 +6,8 @@ init:
 supersetUrl: "http://superset-sandbox.superset-sandbox-ns.svc.cluster.local:8088"
 
 userRoles: '[{"name": "Custom_Role"}]'
-users: '[{"first_name": "Felix","last_name": "Chung","username": "felix","email": "felix@example.org","password": "ZAQ!2wsxcde3","roles": ["Custom_Role"]},{"first_name": "John","last_name": "Wong","username": "john","email": "john@example.org","password": "ZAQ!2wsxcde3","roles": ["Custom_Role"]}]'
+users: '[{"first_name": "Felix","last_name": "Chung","username": "felix","email": "felix@example.org","password": "ZAQ!2wsxcde3","active": true,"roles": ["Custom_Role"]},{"first_name": "John","last_name": "Wong","username": "john","email": "john@example.org","password": "ZAQ!2wsxcde3","active": true,"roles": ["Custom_Role"]}]'
+permissions: '{"permission_view_menu_ids": [8,12,16,17,18]}'
+
+uploadUser: felix@example.org
+uploadPw: ZAQ!2wsxcde3

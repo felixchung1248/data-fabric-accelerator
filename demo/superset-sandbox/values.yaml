@@ -80,8 +80,8 @@ envFromSecrets: []
 
 # -- Extra environment variables that will be passed into pods
 extraEnv:
-  TALISMAN_ENABLED: "False"
-  WTF_CSRF_ENABLED: "False"
+  #TALISMAN_ENABLED: "False"
+  #WTF_CSRF_ENABLED: "False"
   # Different gunicorn settings, refer to the gunicorn documentation
   # https://docs.gunicorn.org/en/stable/settings.html#
   # These variables are used as Flags at the gunicorn startup
@@ -193,9 +193,9 @@ configOverrides:
      SECRET_KEY = 'ZAQ!2wsxcde3'
    my_override: |
      FAB_ADD_SECURITY_API = True
-     # CSRF_ENABLED = False
-     WTF_CSRF_ENABLED = False
-     TALISMAN_ENABLED = False
+     #CSRF_ENABLED = False
+     #WTF_CSRF_ENABLED = False
+     #TALISMAN_ENABLED = False
      
 # -- Same as above but the values are files
 configOverridesFiles: {}
