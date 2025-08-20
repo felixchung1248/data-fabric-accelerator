@@ -18,7 +18,7 @@ def application():
         spark = SparkSession.builder.appName("nessie-minio").getOrCreate()
 
         ## Create a Table
-        #spark.sql("CREATE TABLE nessie.names (name STRING) USING iceberg;").show()
+        spark.sql("CREATE TABLE IF NOT EXISTS nessie.names (name STRING) USING iceberg;").show()
         ## Insert Some Data
         spark.sql("INSERT INTO nessie.names VALUES ('Alex Merced'), ('Dipankar Mazumdar'), ('Jason Hughes')").show()
         ## Query the Data
@@ -103,12 +103,12 @@ template_spec = {
             'spark.kubernetes.file.upload.path': '/mnt/spark/work',
             'spark.sql.extensions': 'org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,org.projectnessie.spark.extensions.NessieSparkSessionExtensions',
             'spark.sql.catalog.nessie': 'org.apache.iceberg.spark.SparkCatalog',
-            'spark.sql.catalog.nessie.uri': 'http://nessie.nessie-sandbox-ns:19120/api/v1',
+            'spark.sql.catalog.nessie.uri': 'http://nessie-sandbox.nessie-sandbox-ns:19120/api/v1',
             'spark.sql.catalog.nessie.ref': 'main',
             'spark.sql.catalog.nessie.authentication.type': 'NONE',
             'spark.sql.catalog.nessie.catalog-impl': 'org.apache.iceberg.nessie.NessieCatalog',
             'spark.sql.catalog.nessie.s3.endpoint': 'http://minio.minio-ns:9000',
-            'spark.sql.catalog.nessie.warehouse': 's3a://nessiedemo01/folder1',
+            'spark.sql.catalog.nessie.warehouse': 's3a://nessiesandboxdemo01',
             'spark.sql.catalog.nessie.io-impl': 'org.apache.iceberg.aws.s3.S3FileIO',
             'spark.sql.catalog.nessie.s3.path-style-access': 'true',
             'spark.sql.catalog.nessie.s3.region': 'us-east-1',
@@ -174,7 +174,7 @@ spark_kubernetes_job = SparkKubernetesOperator(
     task_id=dag_name,
     namespace='spark-ns',  # Kubernetes namespace
     template_spec=template_spec,  # Path to your spark application YAML file
-    kubernetes_conn_id='test0',  # Connection ID for Kubernetes
+    kubernetes_conn_id='kubernetes_in_cluster',  # Connection ID for Kubernetes
     do_xcom_push=False,
     dag=dag
 )

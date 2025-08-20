@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spark-dag
+data:
+  spark_app_write_nessie_s3.py: |-
+{{ .Files.Get "files/spark_app_write_nessie_s3.py" | indent 4 }}

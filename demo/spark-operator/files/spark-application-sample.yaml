@@ -1,0 +1,98 @@
+apiVersion: sparkoperator.k8s.io/v1beta2
+kind: SparkApplication
+metadata:
+  name: nessie-minio-dag-1
+  namespace: spark-ns
+spec:
+  deps:
+    jars:
+      - local:///opt/spark/jars-extra/iceberg-spark-runtime-3.5_2.12-1.9.0.jar
+      - >-
+        local:///opt/spark/jars-extra/nessie-spark-extensions-3.5_2.12-0.103.6.jar
+      - local:///opt/spark/jars-extra/bundle-2.31.0.jar
+      - local:///opt/spark/jars-extra/url-connection-client-2.31.0.jar
+  driver:
+    cores: 1
+    env:
+      - name: AWS_REGION
+        value: us-east-1
+    initContainers:
+      - args:
+          - |-
+            echo 'import pyspark
+            from pyspark.sql import SparkSession
+
+            if __name__ == "__main__":
+                """
+                    Usage: pi [partitions]
+                """
+                spark = SparkSession.builder.appName("nessie-minio").getOrCreate()
+
+                ## Create a Table
+                spark.sql("CREATE TABLE IF NOT EXISTS nessie.names (name STRING) USING iceberg;").show()
+                ## Insert Some Data
+                spark.sql("INSERT INTO nessie.names VALUES ('\''Alex Merced'\''), ('\''Dipankar Mazumdar'\''), ('\''Jason Hughes'\'')").show()
+                ## Query the Data
+                spark.sql("SELECT * FROM nessie.names;").show()
+
+                spark.stop()
+            ' > /mnt/spark/work/app.py
+        command:
+          - sh
+          - '-c'
+        image: dataopennesscommunity/spark-nessie:3.5.5
+        name: import-app
+        resources: {}
+        volumeMounts:
+          - mountPath: /mnt/spark/work
+            name: spark-work
+    labels:
+      version: 3.5.5
+    memory: 512m
+    serviceAccount: spark-operator-spark
+    volumeMounts:
+      - mountPath: /mnt/spark/work
+        name: spark-work
+  dynamicAllocation:
+    enabled: true
+    initialExecutors: 2
+    maxExecutors: 4
+    minExecutors: 2
+  executor:
+    cores: 1
+    env:
+      - name: AWS_REGION
+        value: us-east-1
+    instances: 1
+    labels:
+      version: 3.5.5
+    memory: 512m
+  image: dataopennesscommunity/spark-nessie:3.5.5
+  imagePullPolicy: IfNotPresent
+  mainApplicationFile: local:///mnt/spark/work/app.py
+  mode: cluster
+  pythonVersion: '3'
+  restartPolicy:
+    type: Never
+  sparkConf:
+    spark.app.name: nessie-minio-dag
+    spark.kubernetes.file.upload.path: /mnt/spark/work
+    spark.sql.catalog.nessie: org.apache.iceberg.spark.SparkCatalog
+    spark.sql.catalog.nessie.authentication.type: NONE
+    spark.sql.catalog.nessie.catalog-impl: org.apache.iceberg.nessie.NessieCatalog
+    spark.sql.catalog.nessie.io-impl: org.apache.iceberg.aws.s3.S3FileIO
+    spark.sql.catalog.nessie.ref: main
+    spark.sql.catalog.nessie.s3.access-key-id: minioadmin
+    spark.sql.catalog.nessie.s3.endpoint: http://minio.minio-ns:9000
+    spark.sql.catalog.nessie.s3.path-style-access: 'true'
+    spark.sql.catalog.nessie.s3.region: us-east-1
+    spark.sql.catalog.nessie.s3.secret-access-key: minioadmin
+    spark.sql.catalog.nessie.uri: http://nessie.nessie-sandbox-ns:19120/api/v1
+    spark.sql.catalog.nessie.warehouse: s3a://nessiesandboxdemo01
+    spark.sql.extensions: >-
+      org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,org.projectnessie.spark.extensions.NessieSparkSessionExtensions
+  sparkVersion: 3.5.5
+  type: Python
+  volumes:
+    - emptyDir: {}
+      name: spark-work

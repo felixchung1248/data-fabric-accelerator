@@ -1,0 +1,14 @@
+replicaCount: 1
+
+image:
+  repository: dataopennesscommunity/data-portal
+  pullPolicy: Always
+  tag: "latest"
+
+service:
+  type: NodePort
+  port: 3000
+  targetPort: 3000
+  nodePort: 30030
+  
+hostIp: 4.193.234.148

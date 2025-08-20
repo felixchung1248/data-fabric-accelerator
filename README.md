@@ -27,7 +27,7 @@ chmod +x data-fabric-accelerator/setup*.sh
 ```bash
 ./data-fabric-accelerator/setup_k8s.sh ## can skip if the machine has installed K8s
 ```
-4b. (Optional) Re-login your machine. Run the below commands to enable K8s ingress, dns and dashboard
+4b. Re-login your machine. Run the below commands to enable K8s ingress, dns and dashboard
 ```bash
 microk8s enable dashboard dns ingress
 microk8s start
@@ -36,7 +36,7 @@ microk8s config > $HOME/.kube/config
 microk8s dashboard-proxy
 ```
 
-5. (Optional) Run the below setup scripts as below to install Helm if your machine doesn't have it
+5. (Optional) Re-login your machine. Run the below setup scripts as below to install Helm if your machine doesn't have it
 ```bash
 ./data-fabric-accelerator/setup_helm.sh ## can skip if the machine has installed Helm
 ```
@@ -46,6 +46,7 @@ microk8s dashboard-proxy
 6b. (Optional) Export API_KEY to use Agentic AI feature for data analytics
 ```bash
 export API_KEY={your API key from openrouter.ai} ## can skip if the machine has installed Helm
+export HOST_IP={the public IP of your VM}
 ```
 
 ## Installation
@@ -58,7 +59,7 @@ chmod +x data-fabric-accelerator/setup*.sh
 ### Accesssing the Kubenetes Dashboard
 1. If 6b has been performed, the dashboard should have been enabled.
 2. Open a new session of your machine
-3. Run `microk8s kubectl port-forward -n kube-system service/kubernetes-dashboard 10443:443`
+3. Run `microk8s dashboard-proxy`
 4. Access the Kubernetes Dashboard on `<Your VM IP>`:10443
 
 
@@ -77,6 +78,7 @@ chmod +x data-fabric-accelerator/setup*.sh
 | Zammad | http://`<Your VM IP>`:30880  | ITSM (not necessary for data platform but to provide end-to-end governed data workflow) |
 | Jenkins | http://`<Your VM IP>`:30808  | CD pipeline for dataset deployment |
 | MinIO | http://`<Your VM IP>`:31090  | Object storage for user drop zone |
+| Airflow UI | http://`<Your VM IP>`:31151 | Workflow orchestration and monitoring |
 
 
 ## Links for optional components

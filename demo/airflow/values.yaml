@@ -776,8 +776,14 @@ workers:
   #     - name: my-templated-extra-volume
   #       mountPath: "{{ .Values.my_custom_path }}"
   #       readOnly: true
-  extraVolumes: []
-  extraVolumeMounts: []
+  extraVolumes:
+    - name: spark-dag
+      configMap:
+        name: spark-dag
+  extraVolumeMounts: 
+    - name: spark-dag
+      mountPath: /opt/airflow/dags/spark_app_write_nessie_s3.py
+      subPath: spark_app_write_nessie_s3.py
 
   # Expose additional ports. These can be used for additional metric collection.
   extraPorts: []
@@ -994,9 +1000,14 @@ scheduler:
   #     - name: my-templated-extra-volume
   #       mountPath: "{{ .Values.my_custom_path }}"
   #       readOnly: true
-  extraVolumes: []
-  extraVolumeMounts: []
-
+  extraVolumes:
+    - name: spark-dag
+      configMap:
+        name: spark-dag
+  extraVolumeMounts: 
+    - name: spark-dag
+      mountPath: /opt/airflow/dags/spark_app_write_nessie_s3.py
+      subPath: spark_app_write_nessie_s3.py
   # Select certain nodes for airflow scheduler pods.
   nodeSelector: {}
   affinity: {}
@@ -2654,6 +2665,7 @@ config:
     colored_console_log: 'False'
     remote_logging: '{{- ternary "True" "False" (or .Values.elasticsearch.enabled .Values.opensearch.enabled) }}'
     auth_manager: "airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager"
+    hostname_callable: "socket:getfqdn"
   logging:
     remote_logging: '{{- ternary "True" "False" (or .Values.elasticsearch.enabled .Values.opensearch.enabled) }}'
     colored_console_log: 'False'
