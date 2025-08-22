@@ -158,7 +158,7 @@ template_spec = {
             },
             'instances': 1,
             'cores': 1,
-            'memory': '512m',
+            'memory': '2g',
             'env': [
                 {
                     'name': 'AWS_REGION',
