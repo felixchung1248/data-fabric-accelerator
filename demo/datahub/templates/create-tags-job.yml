@@ -21,4 +21,4 @@ spec:
         configMap:
           name: {{ .Release.Name }}-python
       restartPolicy: Never
-  backoffLimit: 4
+  backoffLimit: 100
