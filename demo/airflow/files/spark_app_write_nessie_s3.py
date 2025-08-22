@@ -121,7 +121,7 @@ template_spec = {
                 'version': '3.5.5'
             },
             'cores': 1,
-            'memory': '512m',
+            'memory': '2g',
             'initContainers': [
                 {
                     'command': ['sh', '-c'],
