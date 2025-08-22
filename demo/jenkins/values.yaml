@@ -1038,15 +1038,15 @@ agent:
   # -- Enable the possibility to restrict the usage of this agent to specific folder. This flag correspond to the "Restrict pipeline support to authorized folders" flag in kubernetes plugin UI
   usageRestricted: false
   # -- The connection timeout in seconds for connections to Kubernetes API. The minimum value is 5
-  kubernetesConnectTimeout: 5
+  kubernetesConnectTimeout: 50
   # -- The read timeout in seconds for connections to Kubernetes API. The minimum value is 15
-  kubernetesReadTimeout: 15
+  kubernetesReadTimeout: 150
   # -- The maximum concurrent connections to Kubernetes API
   maxRequestsPerHostStr: "32"
   # -- Time in minutes after which the Kubernetes cloud plugin will clean up an idle worker that has not already terminated
-  retentionTimeout: 5
+  retentionTimeout: 50
   # -- Seconds to wait for pod to be running
-  waitForPodSec: 600
+  waitForPodSec: 6000
   # -- Namespace in which the Kubernetes agents should be launched
   namespace:
   # -- Custom Pod labels (an object with `label-key: label-value` pairs)
