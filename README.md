@@ -12,8 +12,14 @@ As you know, a modernized data management is not only IT-managed, but also a mor
 ## Features
 
 ### Data Marketplace ###
+- User-friendly data asset discovery
+- Data preview
+- User rating
+- User access management (coming soon)
+### DataOps ###
 - Self-service dataset deployment from sandbox to production with governance
-- GenAI chatbot to query internal data 
+### Agentic AI ###
+- Chatbot to query internal data with human language
 
 ## Prerequisite
 1. Prepare a machine running in Ubuntu with Internet access. (Mine was Ubuntu 24 with 8vcpu / 32g memory in Azure Southeast Asia when I developed this platform). I recommend a new and clean machine to avoid any issue
