@@ -46,14 +46,17 @@ microk8s dashboard-proxy
 ```bash
 ./data-fabric-accelerator/setup_helm.sh ## can skip if the machine has installed Helm
 ```
-
-6a. (Optional) Go to openrouter.ai, register an account for some free GenAI models and create an API key
-
-6b. (Optional) Export API_KEY to use Agentic AI feature for data analytics
+6. Export HOST_IP with the public IP of your VM
 ```bash
-export API_KEY={your API key from openrouter.ai} ## can skip if the machine has installed Helm
 export HOST_IP={the public IP of your VM}
 ```
+7a. (Optional) Go to openrouter.ai, register an account for some free GenAI models and create an API key
+
+7b. (Optional) Export API_KEY to use Agentic AI feature for data analytics
+```bash
+export API_KEY={your API key from openrouter.ai} ## can skip if the machine has installed Helm
+```
+
 
 ## Installation
 1. Re-login your machine. Run the below to install all application components for the data fabric platform
