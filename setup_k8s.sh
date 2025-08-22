@@ -13,6 +13,7 @@ cd "$SCRIPT_DIR"
 sudo snap install microk8s --classic
 sudo usermod -a -G microk8s $USER
 sudo chown -f -R $USER ~/.kube
+newgrp microk8s
 
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
