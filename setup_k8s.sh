@@ -29,6 +29,6 @@ else
     echo "$ALIAS_STRING" >> "$BASHRC_FILE"
     echo "Installed $ALIAS_NAME"
 fi
-
+bash
 
 
