@@ -1,4 +1,7 @@
 #!/bin/bash
+shopt -s expand_aliases
+[ -f ~/.bash_aliases ] && . ~/.bash_aliases
+
 CONFIG_FILE="namespace.conf"
 DATAHUB_NAMESPACE=datahub-ns
 MCP_AGENTIC_DREMIO_NAMESPACE=mcp-agentic-dremio-ns
