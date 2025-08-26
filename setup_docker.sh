@@ -11,7 +11,6 @@ else
     echo "$ALIAS_STRING" >> "$BASHRC_FILE"
     echo "Installed $ALIAS_NAME"
 fi
-bash
 
 
 echo current user: $USER
@@ -35,6 +34,7 @@ echo \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
+bash
 
 # Install Docker
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
