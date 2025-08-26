@@ -1,18 +1,4 @@
 #!/bin/bash
-shopt -s expand_aliases
-BASHRC_FILE="$HOME/.bash_aliases"
-
-ALIAS_NAME="kubectl"
-ALIAS_COMMAND="/snap/bin/microk8s $ALIAS_NAME"
-ALIAS_STRING="alias $ALIAS_NAME='$ALIAS_COMMAND'"
-if [ -f "$BASHRC_FILE" ] && grep -Fxq "$ALIAS_STRING" "$BASHRC_FILE"; then
-    echo "Already installed"
-else
-    echo "$ALIAS_STRING" >> "$BASHRC_FILE"
-    echo "Installed $ALIAS_NAME"
-fi
-
-
 echo current user: $USER
 echo home path: $HOME
 
@@ -34,7 +20,6 @@ echo \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
-bash
 
 # Install Docker
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
