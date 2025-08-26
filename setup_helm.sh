@@ -1,14 +1,15 @@
 #!/bin/bash
+shopt -s expand_aliases
+BASHRC_FILE="$HOME/.bash_aliases"
 
 ALIAS_NAME="helm"
-ALIAS_COMMAND="/snap/bin/microk8s helm"
+ALIAS_COMMAND="/snap/bin/microk8s $ALIAS_NAME"
 ALIAS_STRING="alias $ALIAS_NAME='$ALIAS_COMMAND'"
-if grep -Fxq "$ALIAS_STRING" ~/.bashrc
-then
-    echo "Already install"
+if [ -f "$BASHRC_FILE" ] && grep -Fxq "$ALIAS_STRING" "$BASHRC_FILE"; then
+    echo "Already installed"
 else
-    echo "$ALIAS_STRING" >> ~/.bashrc
-    echo "Installed helm"
+    echo "$ALIAS_STRING" >> "$BASHRC_FILE"
+    echo "Installed $ALIAS_NAME"
 fi
 bash
 
