@@ -1,11 +1,9 @@
 replicaCount: 1
 
 image:
-  repository: jtruongey/python-golden-image
+  repository: dataopennesscommunity/demo-golden
   pullPolicy: IfNotPresent
   tag: "latest"
-  pullSecrets: 
-   - name: docker-registry-secret
 
 service:
   type: ClusterIP
