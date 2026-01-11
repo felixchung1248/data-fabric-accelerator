@@ -1,0 +1,32 @@
+webserver:
+  startupProbe:
+    periodSeconds: 100
+    timeoutSeconds: 200
+  webserverConfig: |-
+    WTF_CSRF_ENABLED = False
+
+executor: KubernetesExecutor
+
+ingress:
+  web:
+    enabled: true
+
+flower:
+  enabled: false
+redis:
+  enabled: false
+
+dags:
+  persistence:
+    enabled: true
+
+logs:
+  persistence:
+    enabled: true
+    size: 10Gi
+
+extraEnv: |
+   - name: AIRFLOW__WEBSERVER__EXPOSE_CONFIG
+     value: 'True'
+   - name: AIRFLOW__CORE__TEST_CONNECTION
+     value: Enabled
